@@ -54,6 +54,5 @@ h1.main-title {
 /* Active State */
 .nav-link.active {
     color: #1a1a1a;
-    /* Optional: Add a small dot or underline to show active state clearly */
     position: relative; 
 }

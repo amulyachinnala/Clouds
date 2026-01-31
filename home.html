@@ -2,9 +2,175 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Cloud</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* --- Dashboard Specific Styles --- */
+
+        /* Layout Grid for Desktop */
+        .dashboard-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        /* 1. CALENDAR STYLES */
+        .calendar-card {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 25px;
+            width: 100%;
+            max-width: 400px; /* Limits width so it looks nice */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .calendar-header {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* The 7-column grid */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            text-align: center;
+        }
+
+        /* Weekday Labels (Mo, Tu, We...) */
+        .weekday-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #9aa0a6;
+            margin-bottom: 10px;
+        }
+
+        /* Individual Days */
+        .day-cell {
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            position: relative;
+            background: #f9fafb;
+            color: #1a1a1a;
+        }
+
+        /* Icons overlay on days */
+        .status-icon {
+            position: absolute;
+            font-size: 1.1rem;
+        }
+        
+        /* Modifiers for Status */
+        .day-fire { background: #fff4e5; border: 1px solid #ffe0b2; color: transparent; }
+        .day-fire .status-icon { color: #ff9800; } /* Orange Fire */
+
+        .day-check { background: #e6f4ea; border: 1px solid #ceead6; color: transparent; }
+        .day-check .status-icon { color: #34a853; } /* Green Check */
+
+        .day-miss { background: #fce8e6; border: 1px solid #fad2cf; color: transparent; }
+        .day-miss .status-icon { color: #ea4335; } /* Red X */
+
+        .current-day {
+            border: 2px solid #1a1a1a;
+            font-weight: 700;
+        }
+
+
+        /* 2. WEEKLY CHART STYLES */
+        .chart-card {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 25px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-container {
+            display: flex;
+            align-items: flex-end; /* Align bars to bottom */
+            justify-content: space-between;
+            height: 150px;
+            margin-top: 20px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .chart-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 12%;
+        }
+
+        .chart-bar {
+            width: 100%;
+            background: #1a1a1a;
+            border-radius: 4px 4px 0 0;
+            transition: height 0.5s ease;
+            position: relative;
+        }
+        
+        /* Tooltip for points on hover */
+        .chart-bar:hover::after {
+            content: attr(data-points);
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000;
+            color: #fff;
+            padding: 4px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        .chart-day-label {
+            margin-top: 8px;
+            font-size: 0.75rem;
+            color: #6e6e73;
+        }
+
+        /* 3. QUICK STATS ROW */
+        .stats-row {
+            width: 100%;
+            max-width: 830px; /* Matches the 2 cards + gap */
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .stat-box {
+            flex: 1;
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: left;
+        }
+        .stat-val { font-size: 1.8rem; font-weight: 800; display: block; }
+        .stat-label { font-size: 0.9rem; color: #6e6e73; }
+
+    </style>
 </head>
 <body>
 
@@ -18,9 +184,126 @@
             <a href="shop.html" class="nav-link">Shop</a>
         </nav>
 
-        <h2>Welcome Home</h2>
-        <p>This is the main dashboard. Select a tab above to get started.</p>
+        <h2>Welcome Back!</h2>
+        <p style="margin-bottom: 40px; color: #6e6e73;">Here is your activity for October.</p>
+
+        <div class="dashboard-content">
+            
+            <div class="calendar-card">
+                <div class="calendar-header">
+                    <span id="monthName">Month</span>
+                    <i class="fa-solid fa-calendar-days" style="color:#9aa0a6;"></i>
+                </div>
+                <div class="calendar-grid" id="calendarGrid">
+                    </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="calendar-header">
+                    <span>Weekly Points</span>
+                    <i class="fa-solid fa-chart-simple" style="color:#9aa0a6;"></i>
+                </div>
+                <div class="chart-container" id="weeklyChart">
+                    </div>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-box">
+                    <span class="stat-val">12</span>
+                    <span class="stat-label">Days Streak 🔥</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-val">450</span>
+                    <span class="stat-label">Total Points</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-val">85%</span>
+                    <span class="stat-label">Completion Rate</span>
+                </div>
+            </div>
+
+        </div>
     </div>
 
+    <script>
+        // 1. SETUP DATE
+        const date = new Date();
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        document.getElementById('monthName').innerText = monthNames[date.getMonth()] + " " + date.getFullYear();
+
+        // 2. GENERATE CALENDAR
+        const calendarGrid = document.getElementById('calendarGrid');
+        const daysInCurrentMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+        const currentDay = date.getDate();
+
+        // Add Weekday Headers
+        const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+        weekdays.forEach(day => {
+            const div = document.createElement('div');
+            div.className = 'weekday-label';
+            div.innerText = day;
+            calendarGrid.appendChild(div);
+        });
+
+        // Generate Days
+        for (let i = 1; i <= daysInCurrentMonth; i++) {
+            const dayDiv = document.createElement('div');
+            dayDiv.className = 'day-cell';
+            dayDiv.innerText = i;
+
+            // --- FAKE DATA SIMULATION ---
+            // Since we don't have a real backend history, we'll randomize status for past days
+            if (i < currentDay) {
+                const random = Math.random();
+                if (random > 0.6) {
+                    // STREAK (Fire)
+                    dayDiv.classList.add('day-fire');
+                    dayDiv.innerHTML = `<i class="fa-solid fa-fire status-icon"></i>`;
+                } else if (random > 0.3) {
+                    // ACTIVE (Check)
+                    dayDiv.classList.add('day-check');
+                    dayDiv.innerHTML = `<i class="fa-solid fa-check status-icon"></i>`;
+                } else {
+                    // MISSED (X)
+                    dayDiv.classList.add('day-miss');
+                    dayDiv.innerHTML = `<i class="fa-solid fa-xmark status-icon"></i>`;
+                }
+            } else if (i === currentDay) {
+                dayDiv.classList.add('current-day');
+                // You could check localstorage here to see if they finished tasks today
+            }
+
+            calendarGrid.appendChild(dayDiv);
+        }
+
+        // 3. GENERATE WEEKLY CHART
+        const chartContainer = document.getElementById('weeklyChart');
+        // Fake data for the last 7 days
+        const weeklyData = [
+            { day: 'Mon', points: 20 },
+            { day: 'Tue', points: 45 }, // High score
+            { day: 'Wed', points: 10 },
+            { day: 'Thu', points: 30 },
+            { day: 'Fri', points: 50 }, // Max height
+            { day: 'Sat', points: 0 },
+            { day: 'Sun', points: 15 }
+        ];
+
+        weeklyData.forEach(data => {
+            const col = document.createElement('div');
+            col.className = 'chart-column';
+
+            // Calculate height percentage (assuming 50 is max points possible per day)
+            const heightPercent = (data.points / 50) * 100;
+
+            col.innerHTML = `
+                <div class="chart-bar" style="height: ${heightPercent}%;" data-points="${data.points} pts"></div>
+                <span class="chart-day-label">${data.day}</span>
+            `;
+            chartContainer.appendChild(col);
+        });
+
+    </script>
+    <script src="tour.js"></script>
 </body>
 </html>
