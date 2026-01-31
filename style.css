@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: #ffffff; 
+    color: #1a1a1a;
+    min-height: 100vh;
+}
+
+/* Page Content*/
+.page-container {
+    max-width: 900px;
+    margin: 0 auto; 
+    padding: 20px 20px 60px 20px;
+    text-align: center;
+}
+
+/* CLOUD Header */
+h1.main-title {
+    font-size: 4rem;
+    font-weight: 10;
+    margin: 0 0 10px 0; 
+    letter-spacing: -2px;
+    color: #1a1a1a;
+    text-transform: uppercase;
+    line-height: 1;
+}
+
+/* Navigation Bar */
+.nav-bar {
+    display: flex;
+    justify-content: center;
+    gap: 40px; 
+    border-top: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5; 
+    padding: 5px 0; 
+    margin-bottom: 30px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #9aa0a6;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.nav-link:hover {
+    color: #1a1a1a;
+}
+
+/* Active State */
+.nav-link.active {
+    color: #1a1a1a;
+    /* Optional: Add a small dot or underline to show active state clearly */
+    position: relative; 
+}

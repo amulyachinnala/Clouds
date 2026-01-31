@@ -261,7 +261,7 @@
 
         <div class="social-login-group">
             <button class="social-btn">
-                <img src="https://pngtree.com/so/google-icons" alt="Google">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google">
             </button>
             <button class="social-btn">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" alt="Facebook">
@@ -274,7 +274,29 @@
     </main>
 
     <script>
-        /* JavaScript Functionality??? */
+        // 1. Select the elements we need from the HTML
+        const loginForm = document.getElementById('loginForm');
+        const passwordField = document.getElementById('passwordField');
+        const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+
+        // 2. Handle the "Get Started" (Submit) Button
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevents the page from refreshing
+            
+            // Redirects the user to the Home page
+            window.location.href = 'home.html'; 
+        });
+
+        // 3. Handle the Password "Eye" Icon
+        togglePasswordBtn.addEventListener('click', function () {
+            // Check if current type is password or text
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            
+            // Toggle the icon design (slash vs no slash)
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
     </script>
 </body>
 </html>
