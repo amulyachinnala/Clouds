@@ -1,0 +1,24 @@
+/* parallaxscrolling.css
+	 Proper CSS for a parallax background.
+ */
+html, body {
+	height: 100%;
+	margin: 0;
+}
+.parallax {
+	/* fallback gradient encoded as data URI so preview works offline */
+	background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1600' height='900'><defs><linearGradient id='g' x1='0' x2='1'><stop offset='0' stop-color='%23a1c4fd'/><stop offset='1' stop-color='%2382a0ff'/></linearGradient></defs><rect width='100%' height='100%' fill='url(%23g)'/></svg>");
+	height: 100vh;
+	background-attachment: fixed;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+.content {
+	min-height: 50vh;
+	padding: 40px 16px;
+	color: #fff;
+	text-align: center;
+	font-family: Arial, sans-serif;
+}

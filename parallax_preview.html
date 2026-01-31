@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Parallax Preview</title>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    .parallax {
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1600' height='900'><defs><linearGradient id='g' x1='0' x2='1'><stop offset='0' stop-color='%23a1c4fd'/><stop offset='1' stop-color='%2382a0ff'/></linearGradient></defs><rect width='100%' height='100%' fill='url(%23g)'/></svg>");
+      height: 60vh;
+      background-attachment: fixed;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    .content { padding: 40px 16px; font-family: Arial, sans-serif; text-align:center }
+    h1 { margin: 0 0 8px 0; color: #222 }
+    p { margin: 0; color: #444 }
+  </style>
+</head>
+<body>
+  <div class="parallax"></div>
+  <div class="content">
+    <h1>Parallax Preview</h1>
+    <p>Open this file in your browser for a live preview. The background is embedded so it works offline.</p>
+  </div>
+</body>
+</html>
