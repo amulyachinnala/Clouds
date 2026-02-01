@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Tasks</title>
     <link rel="icon" type="image/png" href="Graphics/lemonie%20happy.png">
-    <link rel="shortcut icon" href="Graphics/lemonie%20happy.png">
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
@@ -12,21 +11,56 @@
     <link rel="stylesheet" href="style.css">
 
     <style>
-        /* --- LOGO STYLES --- */
-        .logo-container {
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+        }
+
+        .page-container {
+            width: 90%;
+            margin: 0 auto;
+            max-width: 1000px; 
+        }
+
+        /* LOGO */
+        .brand-logo-container {
             display: flex;
             justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: 30px;
             margin-bottom: 20px;
         }
-        .logo {
-            max-width: 150px; 
-            height: auto;
-            cursor: pointer;
+
+        .brand-avatar-img {
+            height: 75px;  
+            width: auto;
         }
-        .brand-avatar { max-width: 80px; height: auto; margin-right: 8px; }
-        .logo-link { display: flex; align-items: center; justify-content: flex-start; }
-        .logo-container { display:flex; justify-content:flex-start; margin-bottom:20px; }
-        .logo { max-width:150px; height:auto; cursor:pointer; }
+
+        .brand-text-img {
+            height: 50px; 
+            width: auto;
+        }
+
+        /* --- NAVIGATION --- */
+        .nav-bar {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #9aa0a6;
+            font-size: 16px;
+        }
+
+        .nav-link.active {
+            color: black;
+            font-weight: bold;
+        }
 
         /* --- PROGRESS BAR SECTION --- */
         .progress-section {
@@ -64,7 +98,7 @@
             object-fit: cover;
         }
         
-        /* Text*/
+        /* Text (Right Side) */
         .progress-text {
             font-size: 1.1rem;
             font-weight: 700;
@@ -74,7 +108,7 @@
             white-space: nowrap; 
         }
 
-        /* WRAPPER FOR HOVER EFFECT --- */
+        /* WRAPPER FOR HOVER EFFECT */
         .progress-wrapper {
             flex-grow: 1;
             position: relative; 
@@ -212,12 +246,10 @@
 <body>
     <div class="page-container">
         
-        <div class="logo-container">
-            <a href="home.html" title="Home" style="display:flex;align-items:center;gap:8px;">
-                <img src="Graphics/lemonie satisfied.png" alt="Lemonie" class="brand-avatar">
-                <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney logo" class="logo">
-            </a>
-        </div>
+        <header class="brand-logo-container">
+            <img src="Graphics/lemonie satisfied.png" alt="Lemonie" class="brand-avatar-img">
+            <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney" class="brand-text-img">
+        </header>
 
         <nav class="nav-bar">
             <a href="home.html" class="nav-link">Home</a>
