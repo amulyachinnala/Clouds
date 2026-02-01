@@ -2,40 +2,214 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Home - Lemoney</title>
-    <link rel="icon" type="image/png" href="Graphics/lemonie%20happy.png">
-    <link rel="shortcut icon" href="Graphics/lemonie%20happy.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 
     <style>
-        .logo-container { display:flex; justify-content:flex-start; margin-bottom:20px }
-        .logo-link { display:flex; align-items:center; gap:8px }
-        .logo { max-width:150px; height:auto }
-        .brand-avatar { max-width:80px; height:auto }
-        #loadingOverlay{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:#fff; z-index:2147483647 }
-        #loadingOverlay.hidden{ display:none }
-        #loadingGif{ max-width:min(1000px,90vw); max-height:90vh; object-fit:contain; transition:opacity .6s ease }
-        .page-container.dimmed{ filter:brightness(.35); transition:filter .6s }
-        body.no-scroll{ overflow:hidden }
+        /* --- GLOBAL STYLES --- */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+        }
+
+        .page-container {
+            width: 90%;
+            margin: 0 auto;
+            max-width: 1000px;
+        }
+
+        /* LOGO */
+        .brand-logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        .brand-avatar-img {
+            height: 75px;
+            width: auto;
+        }
+
+        .brand-text-img {
+            height: 50px;
+            width: auto;
+        }
+
+        /* --- NAVIGATION --- */
+        .nav-bar {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #9aa0a6;
+            font-size: 16px;
+        }
+
+        .nav-link.active {
+            color: black;
+            font-weight: bold;
+        }
+
+        /* --- DASHBOARD CONTENT --- */
+        .dashboard-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 50px;
+            width: 100%;
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: flex;
+            gap: 30px;
+            width: 100%;
+            justify-content: space-between;
+        }
+        
+        .stat-box {
+            flex: 1;
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: left;
+            border: 1px solid #e5e5e5;
+        }
+        .stat-val { font-size: 1.8rem; font-weight: 800; display: block; }
+        .stat-label { font-size: 0.9rem; color: #6e6e73; }
+
+        /* Charts Row */
+        .charts-row {
+            display: flex;
+            gap: 40px;
+            width: 100%;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .calendar-card, .chart-card {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 25px;
+            flex: 1;
+            min-width: 300px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        /* Calendar Styles */
+        .calendar-header {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            text-align: center;
+        }
+
+        .weekday-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #9aa0a6;
+            margin-bottom: 10px;
+        }
+
+        .day-cell {
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            position: relative;
+            background: #f9fafb;
+            color: #1a1a1a;
+        }
+
+        .status-icon { position: absolute; font-size: 1.1rem; }
+        .day-fire { background: #fff4e5; border: 1px solid #ffe0b2; color: transparent; }
+        .day-fire .status-icon { color: #ff9800; } 
+        .day-check { background: #e6f4ea; border: 1px solid #ceead6; color: transparent; }
+        .day-check .status-icon { color: #34a853; } 
+        .day-miss { background: #fce8e6; border: 1px solid #fad2cf; color: transparent; }
+        .day-miss .status-icon { color: #ea4335; } 
+        .current-day { border: 2px solid #1a1a1a; font-weight: 700; }
+
+        /* --- CHART STYLES (FIXED) --- */
+        .chart-container {
+            display: flex;
+            justify-content: space-between; /* Spreads bars evenly */
+            height: 200px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .chart-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* FIX: Fixed width prevents giant bars */
+            width: 40px; 
+            height: 100%;
+            justify-content: flex-end;
+        }
+
+        .chart-bar {
+            width: 100%;
+            background: #4CAF50; /* Green */
+            border-radius: 4px 4px 0 0;
+            transition: height 0.5s ease;
+            position: relative;
+            min-height: 4px;
+        }
+        
+        .chart-bar:hover::after {
+            content: attr(data-points);
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000;
+            color: #fff;
+            padding: 4px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        .chart-day-label {
+            margin-top: 8px;
+            font-size: 0.75rem;
+            color: #6e6e73;
+        }
     </style>
 </head>
 <body>
 
-    <div id="loadingOverlay" aria-hidden="true">
-        <img id="loadingGif" src="Graphics/loading.gif" alt="Loading">
-    </div>
-
     <div class="page-container">
-        <div class="logo-container">
-            <a href="home.html" class="logo-link">
-                <img src="Graphics/lemonie satisfied.png" alt="Lemonie" class="brand-avatar">
-                <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney" class="logo">
-            </a>
-        </div>
+        
+        <header class="brand-logo-container">
+            <img src="Graphics/lemonie satisfied.png" alt="Lemonie" class="brand-avatar-img">
+            <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney" class="brand-text-img">
+        </header>
 
         <nav class="nav-bar">
             <a href="home.html" class="nav-link active">Home</a>
@@ -44,45 +218,119 @@
             <a href="shop.html" class="nav-link">Shop</a>
         </nav>
 
-        <main style="max-width:1000px;margin:0 auto;">
-            <section style="text-align:center;margin:24px 0;">
-                <h1>Welcome back</h1>
-                <p style="color:#6e6e73">Here is your activity for the month.</p>
-            </section>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h2 style="margin: 0; font-size: 1.5rem;">Welcome Back!</h2>
+            <p style="color: #6e6e73; margin-top: 8px;">Here is your activity for February.</p>
+        </div>
 
-            <section class="charts-row" style="display:flex;gap:32px;">
-                <div class="calendar-card" style="flex:1;min-width:280px">
-                    <div class="calendar-header"><strong id="monthName">Month</strong></div>
-                    <div id="calendarGrid" class="calendar-grid"></div>
+        <div class="dashboard-content">
+
+            <div class="stats-row">
+                <div class="stat-box">
+                    <span class="stat-val">12</span>
+                    <span class="stat-label">Days Streak 🔥</span>
                 </div>
-                <div class="chart-card" style="flex:1;min-width:280px">
-                    <div class="calendar-header"><strong>Weekly Points</strong></div>
-                    <div id="weeklyChart" class="chart-container"></div>
+                <div class="stat-box">
+                    <span class="stat-val">450</span>
+                    <span class="stat-label">Total Points</span>
                 </div>
-            </section>
-        </main>
+                <div class="stat-box">
+                    <span class="stat-val">85%</span>
+                    <span class="stat-label">Completion Rate</span>
+                </div>
+            </div>
+            
+            <div class="charts-row">
+                
+                <div class="calendar-card">
+                    <div class="calendar-header">
+                        <span id="monthName">Month</span>
+                        <i class="fa-solid fa-calendar-days" style="color:#9aa0a6;"></i>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid"></div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="calendar-header">
+                        <span>Weekly Points</span>
+                        <i class="fa-solid fa-chart-simple" style="color:#9aa0a6;"></i>
+                    </div>
+                    <div class="chart-container" id="weeklyChart"></div>
+                </div>
+
+            </div>
+
+        </div>
     </div>
 
     <script>
-        const date=new Date(); const months=["January","February","March","April","May","June","July","August","September","October","November","December"];
-        document.getElementById('monthName').innerText=months[date.getMonth()]+' '+date.getFullYear();
-        const calendarGrid=document.getElementById('calendarGrid');
-        const days=new Date(date.getFullYear(),date.getMonth()+1,0).getDate();
-        ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(d=>{const e=document.createElement('div');e.className='weekday-label';e.innerText=d;calendarGrid.appendChild(e)});
-        for(let i=1;i<=days;i++){const el=document.createElement('div');el.className='day-cell';el.innerText=i;calendarGrid.appendChild(el)}
-    </script>
+        const date = new Date();
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        document.getElementById('monthName').innerText = monthNames[date.getMonth()] + " " + date.getFullYear();
 
-    <script>
-    (function(){
-        const overlay=document.getElementById('loadingOverlay');
-        const gif=document.getElementById('loadingGif');
-        const container=document.querySelector('.page-container');
-        const fadeDuration=1000, totalVisible=3000, fadeStart=Math.max(0,totalVisible-fadeDuration);
-        function show(){ overlay.style.display='flex'; overlay.style.opacity='1'; gif.style.opacity='1'; container.classList.add('dimmed'); document.body.classList.add('no-scroll'); setTimeout(()=>{gif.style.opacity='0.01'},fadeStart); setTimeout(()=>{overlay.style.display='none'; container.classList.remove('dimmed'); document.body.classList.remove('no-scroll'); gif.style.opacity='1'}, totalVisible); }
-        window.addEventListener('DOMContentLoaded', show); window.addEventListener('pageshow', show);
-    })();
-    </script>
+        // CALENDAR
+        const calendarGrid = document.getElementById('calendarGrid');
+        const daysInCurrentMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+        const currentDay = date.getDate();
 
+        const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+        weekdays.forEach(day => {
+            const div = document.createElement('div');
+            div.className = 'weekday-label';
+            div.innerText = day;
+            calendarGrid.appendChild(div);
+        });
+
+        for (let i = 1; i <= daysInCurrentMonth; i++) {
+            const dayDiv = document.createElement('div');
+            dayDiv.className = 'day-cell';
+            dayDiv.innerText = i;
+
+            if (i < currentDay) {
+                const random = Math.random();
+                if (random > 0.6) {
+                    dayDiv.classList.add('day-fire');
+                    dayDiv.innerHTML = `<i class="fa-solid fa-fire status-icon"></i>`;
+                } else if (random > 0.3) {
+                    dayDiv.classList.add('day-check');
+                    dayDiv.innerHTML = `<i class="fa-solid fa-check status-icon"></i>`;
+                } else {
+                    dayDiv.classList.add('day-miss');
+                    dayDiv.innerHTML = `<i class="fa-solid fa-xmark status-icon"></i>`;
+                }
+            } else if (i === currentDay) {
+                dayDiv.classList.add('current-day');
+            }
+            calendarGrid.appendChild(dayDiv);
+        }
+
+        // CHART
+        const chartContainer = document.getElementById('weeklyChart');
+        const weeklyData = [
+            { day: 'Mon', points: 15 },
+            { day: 'Tue', points: 35 },
+            { day: 'Wed', points: 50 },
+            { day: 'Thu', points: 20 },
+            { day: 'Fri', points: 40 },
+            { day: 'Sat', points: 5 },
+            { day: 'Sun', points: 10 }
+        ];
+
+        const MAX_SCORE_SCALE = 50; 
+
+        weeklyData.forEach(data => {
+            const col = document.createElement('div');
+            col.className = 'chart-column';
+            let heightPercent = (data.points / MAX_SCORE_SCALE) * 100;
+            if (heightPercent > 100) heightPercent = 100;
+
+            col.innerHTML = `
+                <div class="chart-bar" style="height: ${heightPercent}%;" data-points="${data.points} pts"></div>
+                <span class="chart-day-label">${data.day}</span>
+            `;
+            chartContainer.appendChild(col);
+        });
+    </script>
     <script src="tour.js"></script>
 </body>
 </html>
