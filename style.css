@@ -58,6 +58,23 @@ body {
 
 body.no-scroll { overflow: hidden; }
 
+/* Full-page lemons falling GIF background for all pages */
+body::before{
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url('Graphics/lemonsfalling.gif');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover; /* fill the viewport while preserving aspect */
+    opacity: 1;
+    z-index: 0; /* sits under page content (page container is higher) */
+    pointer-events: none;
+}
+
+/* Ensure page content sits above the GIF */
+.page-container{ position: relative; z-index: 2; }
+
 /* Centered lemons animation */
 #lemonsFalling { display: none; }
 body.home-page #lemonsFalling {
