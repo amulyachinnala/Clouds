@@ -56,21 +56,10 @@
             gap: 40px;
             width: 100%;
             justify-content: center;
-            align-items: flex-start;
+            flex-wrap: wrap; 
         }
-/* Styles for Outter Edge*/ 
-        .modal-input {
-            width: 100%;
-            padding: 10px 12px;
-            border-radius: 8px;
-            border: 1px solid #d0d0d0;
-            margin-bottom: 12px;
-            box-sizing: border-box;
-            font-size: 1rem;
-            }
 
-        /* 1. CALENDAR STYLES */
-        .calendar-card {
+        .calendar-card, .chart-card {
             background: #fff;
             border: 1px solid #e5e5e5;
             border-radius: 16px;
@@ -129,7 +118,6 @@
         /* --- CHART SPECIFIC (FIXED) --- */
         .chart-container {
             display: flex;
-            /* Removed 'align-items: flex-end' so columns stretch to full height */
             justify-content: space-between;
             height: 200px; 
             padding-bottom: 5px;
@@ -141,17 +129,18 @@
             flex-direction: column;
             align-items: center;
             width: 12%;
-            height: 100%; /* FIX: Forces column to take full height */
-            justify-content: flex-end; /* FIX: Pushes bar to the bottom */
+            height: 100%; 
+            justify-content: flex-end; 
         }
 
+        /* UPDATE: Changed background to green */
         .chart-bar {
             width: 100%;
-            background: #4CAF50;
+            background: #4CAF50; /* GREEN */
             border-radius: 4px 4px 0 0;
             transition: height 0.5s ease;
             position: relative;
-            min-height: 2px; /* Ensures even 0 points has a tiny line */
+            min-height: 2px;
         }
         
         .chart-bar:hover::after {
@@ -191,11 +180,8 @@
             <a href="shop.html" class="nav-link">Shop</a>
         </nav>
 
-        <div style="width:100%; display:flex; flex-direction:column; align-items:center; margin-top:12px; padding:20px; gap:20px;">
-            <img src="Graphics/welcomeback.png" style="margin:0 auto; display:block; cursor:pointer; text-align:center;" onclick="location.href='home.html'">
-            <p style="margin:0; color:#6e6e73; text-align:center;">Here is your activity for October.</p>
-        </div>
-    
+        <h2>Welcome Back!</h2>
+        <p style="margin-bottom: 30px; color: #6e6e73;">Here is your activity for October.</p>
 
         <div class="dashboard-content">
 
@@ -298,7 +284,6 @@
             const col = document.createElement('div');
             col.className = 'chart-column';
 
-            // Calculate height percentage
             let heightPercent = (data.points / MAX_SCORE_SCALE) * 100;
             if (heightPercent > 100) heightPercent = 100;
 
