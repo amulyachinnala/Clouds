@@ -11,14 +11,31 @@
             margin: 0;
             font-family: Arial, sans-serif;
             background-color: #ffffff;
+            min-height: 100vh;
         }
 
+        /* Full-page lemons falling GIF background */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: url('Graphics/lemonsfalling.gif');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            opacity: 1;
+            z-index: 0; /* Sits under content */
+            pointer-events: none;
+        }
+
+        /* Ensure content sits above the GIF */
         .page-container {
+            position: relative;
+            z-index: 2; 
             width: 90%;
             margin: 0 auto;
             max-width: 1000px;
             padding-top: 50px; 
-
         }
 
         /* LOGO STYLES */
@@ -65,8 +82,7 @@
             margin-top: 30px;
         }
 
-        /* ---------- CHART LAYOUT ---------- */
-
+        /* --- CHART LAYOUT --- */
         .charts-row {
             display: flex;
             justify-content: space-between;
@@ -78,6 +94,11 @@
         .chart-column {
             flex: 1;
             text-align: center;
+            /* Added white background to cards to make them pop over the GIF */
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
         .pie-chart-container {
@@ -96,8 +117,7 @@
             margin-bottom: 15px;
         }
 
-        /* ---------- INPUT UI ---------- */
-
+        /* --- INPUT UI --- */
         .item-inputs {
             margin-top: 20px;
             display: flex;
@@ -106,13 +126,20 @@
         }
 
         .item-inputs input {
-            padding: 8px;
+            padding: 10px;
             width: 120px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
         }
 
         .item-inputs button {
-            padding: 8px 12px;
+            padding: 8px 16px;
             cursor: pointer;
+            background-color: #1a1a1a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -164,10 +191,11 @@
 </div>
 
 <script>
+    // ... [Your existing Chart.js logic remains exactly the same] ...
     const SPENDING_TOTAL = 400;
 
     let spendingLabels = ['Remaining'];
-    let spendingValues = [100]; // percentage
+    let spendingValues = [100]; 
     let spendingColors = ['#6FB98F'];
 
     const spendingChart = new Chart(
@@ -185,9 +213,7 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: {
-                        position: 'bottom'
-                    },
+                    legend: { position: 'bottom' },
                     tooltip: {
                         callbacks: {
                             label: function(ctx) {
@@ -205,33 +231,23 @@
     function addItem() {
         const name = document.getElementById('item-name').value;
         const price = parseFloat(document.getElementById('item-price').value);
-
         if (!name || isNaN(price) || price <= 0) return;
-
         const percent = (price / SPENDING_TOTAL) * 100;
-
-        // Calculate remaining %
         const remainingIndex = spendingLabels.indexOf('Remaining');
         spendingValues[remainingIndex] -= percent;
-
         if (spendingValues[remainingIndex] < 0) {
             alert('Not enough spending money!');
             spendingValues[remainingIndex] += percent;
             return;
         }
-
-        // Add item slice
         spendingLabels.push(name);
         spendingValues.push(percent);
         spendingColors.push(`#${Math.floor(Math.random()*16777215).toString(16)}`);
-
         spendingChart.update();
-
         document.getElementById('item-name').value = '';
         document.getElementById('item-price').value = '';
     }
 
-    // RIGHT: Monthly Budget (locked)
     new Chart(document.getElementById('monthly-budget-chart'), {
         type: 'pie',
         data: {
