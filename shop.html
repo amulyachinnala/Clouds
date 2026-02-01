@@ -3,68 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Shop - Cloud</title>
-    <link rel="icon" type="image/png" href="Graphics/lemonie%20happy.png">
 
+    <!-- Driver.js -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
 
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Main Styles -->
     <link rel="stylesheet" href="style.css">
 
+    <!-- Shop Styles -->
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #ffffff;
-        }
-
-        .page-container {
-            width: 90%;
-            margin: 0 auto;
-            max-width: 1000px; /* Standardize width across pages */
-        }
-
-        /* LOGO */
-        .brand-logo-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-            margin-top: 30px;
-            margin-bottom: 20px;
-        }
-
-        .brand-avatar-img {
-            height: 75px;
-            width: auto;
-        }
-
-        .brand-text-img {
-            height: 50px;
-            width: auto;
-        }
-
-        /* --- NAVIGATION --- */
-        .nav-bar {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-
-        .nav-link {
-            text-decoration: none;
-            color: #9aa0a6;
-            font-size: 16px;
-        }
-
-        .nav-link.active {
-            color: black;
-            font-weight: bold;
-        }
-
-        /* --- SHOP SPECIFIC STYLES --- */
         .score-board {
             font-size: 1.5rem;
             font-weight: 700;
@@ -74,9 +25,6 @@
             display: inline-block;
             padding: 10px 20px;
             border-radius: 12px;
-            display: table; 
-            margin-left: auto;
-            margin-right: auto;
         }
 
         .score-board span {
@@ -149,6 +97,24 @@
             border-radius: 20px;
         }
 
+        .card-actions {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #9aa0a6;
+        }
+
+        .action-btn.delete:hover {
+            color: #d93025;
+        }
+
         .add-prize-btn {
             background: #1a1a1a;
             color: white;
@@ -159,15 +125,47 @@
             cursor: pointer;
         }
     </style>
+
+    <!-- Modal Styles -->
+    <style>
+        .modal-overlay.hidden { display: none; }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .modal-box {
+            background: #f5f5f6;
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 520px;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+        }
+
+        .modal-buttons {
+            text-align: right;
+        }
+    </style>
 </head>
 
 <body>
 <div class="page-container">
 
-    <header class="brand-logo-container">
-        <img src="Graphics/lemonie satisfied.png" alt="Lemonie" class="brand-avatar-img">
-        <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney" class="brand-text-img">
-    </header>
+    <a href="home.html">
+        <img src="Graphics/LEMONEY%20logo.png" class="logo">
+    </a>
 
     <nav class="nav-bar">
         <a href="home.html" class="nav-link">Home</a>
