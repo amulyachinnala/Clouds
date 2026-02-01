@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- CSS VARIABLES --- */
         :root {
             --primary-text: #1a1a1a;
             --secondary-text: #6e6e73;
@@ -24,280 +23,160 @@
         }
 
         body {
-            /* Global Background Settings */
-            background-image: url('Graphics/backgroundmain.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed; 
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 40px 20px; 
+            height: 100vh;
+            overflow: hidden;
+            background-color: #fff;
         }
 
-        /* --- AUTH WRAPPER --- */
+        /* --- THREE COLUMN LAYOUT --- */
+        .page-wrapper {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* Left and Right Image Panels */
+        .side-panel {
+            flex: 1; /* These take up the sides */
+            background-image: url('Graphics/backgroundmain.png');
+            background-size: contain; /* Shows full height without cropping */
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #f8f9fa; /* Subtle color to fill gaps if screen is huge */
+        }
+
+        /* Center Column for Login */
+        .center-column {
+            flex: 1.5; /* Makes the login area a bit wider than the images */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            background-color: #ffffff;
+            z-index: 10;
+            border-left: 1px solid #eee;
+            border-right: 1px solid #eee;
+        }
+
         .auth-container {
+            width: 100%;
+            max-width: 400px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 100%;
-            max-width: 420px;
         }
 
-        /* --- LOGO STYLES (Stacked Above Card) --- */
+        /* --- LOGO STYLES --- */
         .brand-logo-container {
             display: flex;
-            justify-content: center;
             align-items: center;
             gap: 12px;
-            margin-bottom: 30px; /* Space between logo and card */
+            margin-bottom: 30px;
         }
 
-        .brand-avatar-img {
-            height: 75px;
-            width: auto;
-        }
+        .brand-avatar-img { height: 65px; width: auto; }
+        .brand-text-img { height: 45px; width: auto; }
 
-        .brand-text-img {
-            height: 50px;
-            width: auto;
-        }
+        /* --- CARD STYLES --- */
+        .login-card { width: 100%; text-align: center; }
+        h1 { font-size: 1.7rem; font-weight: 700; color: var(--primary-text); margin-bottom: 8px; }
+        .subtitle { font-size: 0.9rem; color: var(--secondary-text); margin-bottom: 32px; }
 
-        /* --- LOGIN CARD --- */
-        .login-card {
-            background: rgba(255, 255, 255, 0.9); /* Transparent white */
-            backdrop-filter: blur(10px);        /* Frosted glass effect */
-            -webkit-backdrop-filter: blur(10px);
-            padding: 48px 40px;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            text-align: center;
-            position: relative;
-            z-index: 5;
-        }
-
-        .hidden { display: none; }
-
-        h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-text);
-            margin-bottom: 12px;
-        }
-
-        .subtitle {
-            font-size: 0.9rem;
-            color: var(--secondary-text);
-            line-height: 1.5;
-            margin-bottom: 32px;
-        }
-
-        /* --- INPUTS --- */
-        .input-group {
-            position: relative;
-            margin-bottom: 16px;
-        }
-
-        .input-group i.field-icon {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #9aa0a6;
-            font-size: 0.9rem;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 16px 45px;
-            background: var(--input-bg);
-            border: none;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            color: var(--primary-text);
-            outline: none;
-            transition: background 0.2s;
-        }
-
-        .input-group input:focus { background: #e8ebee; }
-
-        .toggle-password {
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #9aa0a6;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .forgot-pass-link {
-            display: block;
-            text-align: right;
-            font-size: 0.85rem;
-            color: var(--secondary-text);
-            text-decoration: none;
-            margin-top: -8px;
-            margin-bottom: 24px;
-            font-weight: 500;
-        }
-
-        /* --- BUTTONS --- */
-        .btn-primary {
-            width: 100%;
-            padding: 16px;
-            background: var(--button-bg);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s;
-            margin-bottom: 20px;
-        }
-
-        .btn-primary:hover { opacity: 0.9; }
-
-        .switch-text {
-            font-size: 0.9rem;
-            color: var(--secondary-text);
-            margin-bottom: 20px;
-        }
+        .input-group { position: relative; margin-bottom: 16px; }
+        .input-group i.field-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9aa0a6; }
+        .input-group input { width: 100%; padding: 16px 45px; background: var(--input-bg); border: none; border-radius: 12px; outline: none; }
         
-        .switch-text a {
-            color: var(--primary-text);
-            font-weight: 600;
-            text-decoration: none;
-            cursor: pointer;
-        }
+        .toggle-password { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: #9aa0a6; cursor: pointer; }
+
+        .forgot-pass-link { display: block; text-align: right; font-size: 0.85rem; color: var(--secondary-text); text-decoration: none; margin-bottom: 24px; }
+
+        .btn-primary { width: 100%; padding: 16px; background: var(--button-bg); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; margin-bottom: 20px; }
         
-        .switch-text a:hover { text-decoration: underline; }
-
-        /* --- DIVIDER & SOCIAL --- */
-        .divider {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            color: var(--secondary-text);
-            font-size: 0.85rem;
-            margin-bottom: 24px;
-        }
-
-        .divider::before, .divider::after {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid #e6e8ec;
-        }
-
+        .divider { display: flex; align-items: center; text-align: center; color: var(--secondary-text); font-size: 0.8rem; margin-bottom: 24px; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #e6e8ec; }
         .divider span { margin: 0 12px; }
 
-        .social-login-group {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
+        .social-login-group { display: flex; justify-content: center; gap: 15px; }
+        .social-btn { width: 45px; height: 45px; border-radius: 50%; border: 1px solid #e6e8ec; background: white; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+        .social-btn img { width: 20px; height: 20px; }
+
+        .switch-text { font-size: 0.9rem; color: var(--secondary-text); margin-top: 20px; }
+        .switch-text a { color: var(--primary-text); font-weight: 600; text-decoration: none; cursor: pointer; }
+        .hidden { display: none; }
+
+        /* Mobile Adjustments: Hide side images on small screens */
+        @media (max-width: 900px) {
+            .side-panel { display: none; }
+            .center-column { flex: 1; }
         }
-
-        .social-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: 1px solid #e6e8ec;
-            background: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.1s;
-        }
-
-        .social-btn:hover {
-            background: #f8f9fa;
-            transform: translateY(-2px);
-        }
-
-        .social-btn img { width: 24px; height: 24px; object-fit: contain; }
-
     </style>
 </head>
 <body>
 
-    <div class="auth-container">
-        <header class="brand-logo-container">
-            <img src="Graphics/lemonie satisfied.png" alt="Lemonie" class="brand-avatar-img">
-            <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney" class="brand-text-img">
-        </header>
+    <div class="page-wrapper">
+        <div class="side-panel"></div>
 
-        <main class="login-card">
-            
-            <div id="loginContainer">
-                <h1>Sign in</h1>
-                <p class="subtitle">Manage your finances while being productive. For free.</p>
+        <div class="center-column">
+            <div class="auth-container">
+                <header class="brand-logo-container">
+                    <img src="Graphics/lemonie satisfied.png" alt="Lemonie" class="brand-avatar-img">
+                    <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney" class="brand-text-img">
+                </header>
 
-                <form id="loginForm">
-                    <div class="input-group">
-                        <i class="fa-solid fa-envelope field-icon"></i>
-                        <input type="email" placeholder="Email" required>
+                <main class="login-card">
+                    <div id="loginContainer">
+                        <h1>Sign in</h1>
+                        <p class="subtitle">Access your personal Lemoney dashboard.</p>
+                        <form id="loginForm">
+                            <div class="input-group">
+                                <i class="fa-solid fa-envelope field-icon"></i>
+                                <input type="email" placeholder="Email" required>
+                            </div>
+                            <div class="input-group">
+                                <i class="fa-solid fa-lock field-icon"></i>
+                                <input type="password" id="loginPassword" placeholder="Password" required>
+                                <i class="fa-solid fa-eye-slash toggle-password" onclick="togglePass('loginPassword', this)"></i>
+                            </div>
+                            <a href="#" class="forgot-pass-link">Forgot password?</a>
+                            <button type="submit" class="btn-primary">Sign In</button>
+                        </form>
+                        <p class="switch-text">Don't have an account? <a id="showSignup">Sign up</a></p>
                     </div>
 
-                    <div class="input-group">
-                        <i class="fa-solid fa-lock field-icon"></i>
-                        <input type="password" id="loginPassword" placeholder="Password" required>
-                        <i class="fa-solid fa-eye-slash toggle-password" onclick="togglePass('loginPassword', this)"></i>
+                    <div id="signupContainer" class="hidden">
+                        <h1>Create account</h1>
+                        <p class="subtitle">Join the community today.</p>
+                        <form id="signupForm">
+                            <div class="input-group">
+                                <i class="fa-solid fa-user field-icon"></i>
+                                <input type="text" placeholder="Full Name" required>
+                            </div>
+                            <div class="input-group">
+                                <i class="fa-solid fa-envelope field-icon"></i>
+                                <input type="email" placeholder="Email" required>
+                            </div>
+                            <div class="input-group">
+                                <i class="fa-solid fa-lock field-icon"></i>
+                                <input type="password" id="signupPassword" placeholder="Password" required>
+                                <i class="fa-solid fa-eye-slash toggle-password" onclick="togglePass('signupPassword', this)"></i>
+                            </div>
+                            <button type="submit" class="btn-primary">Sign Up</button>
+                        </form>
+                        <p class="switch-text">Already have an account? <a id="showLogin">Sign in</a></p>
                     </div>
 
-                    <a href="#" class="forgot-pass-link">Forgot password?</a>
-                    <button type="submit" class="btn-primary">Sign In</button>
-                </form>
-
-                <p class="switch-text">
-                    Don't have an account? <a id="showSignup">Sign up</a>
-                </p>
+                    <div class="divider"><span>OR CONTINUE WITH</span></div>
+                    <div class="social-login-group">
+                        <button class="social-btn"><img src="https://cdn-icons-png.flaticon.com/512/300/300221.png" alt="Google"></button>
+                        <button class="social-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" alt="Facebook"></button>
+                        <button class="social-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple"></button>
+                    </div>
+                </main>
             </div>
+        </div>
 
-            <div id="signupContainer" class="hidden">
-                <h1>Create account</h1>
-                <p class="subtitle">Start your journey with Lemoney today.</p>
-
-                <form id="signupForm">
-                    <div class="input-group">
-                        <i class="fa-solid fa-user field-icon"></i>
-                        <input type="text" placeholder="Full Name" required>
-                    </div>
-
-                    <div class="input-group">
-                        <i class="fa-solid fa-envelope field-icon"></i>
-                        <input type="email" placeholder="Email" required>
-                    </div>
-
-                    <div class="input-group">
-                        <i class="fa-solid fa-lock field-icon"></i>
-                        <input type="password" id="signupPassword" placeholder="Password" required>
-                        <i class="fa-solid fa-eye-slash toggle-password" onclick="togglePass('signupPassword', this)"></i>
-                    </div>
-
-                    <button type="submit" class="btn-primary">Sign Up</button>
-                </form>
-
-                <p class="switch-text">
-                    Already have an account? <a id="showLogin">Sign in</a>
-                </p>
-            </div>
-
-            <div class="divider">
-                <span>Or continue with</span>
-            </div>
-
-            <div class="social-login-group">
-                <button class="social-btn"><img src="https://cdn-icons-png.flaticon.com/512/300/300221.png" alt="Google"></button>
-                <button class="social-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" alt="Facebook"></button>
-                <button class="social-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple"></button>
-            </div>
-
-        </main>
+        <div class="side-panel"></div>
     </div>
 
     <script>
@@ -305,10 +184,7 @@
         const signupContainer = document.getElementById('signupContainer');
         const showSignupBtn = document.getElementById('showSignup');
         const showLoginBtn = document.getElementById('showLogin');
-        const loginForm = document.getElementById('loginForm');
-        const signupForm = document.getElementById('signupForm');
 
-        // Toggle Views
         showSignupBtn.addEventListener('click', () => {
             loginContainer.classList.add('hidden');
             signupContainer.classList.remove('hidden');
@@ -319,16 +195,6 @@
             loginContainer.classList.remove('hidden');
         });
 
-        // Redirect on submit
-        function handleAuth(e) {
-            e.preventDefault(); 
-            window.location.href = 'home.html'; 
-        }
-
-        loginForm.addEventListener('submit', handleAuth);
-        signupForm.addEventListener('submit', handleAuth);
-
-        // Password Toggle
         function togglePass(fieldId, iconElement) {
             const field = document.getElementById(fieldId);
             const type = field.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -336,6 +202,15 @@
             iconElement.classList.toggle('fa-eye');
             iconElement.classList.toggle('fa-eye-slash');
         }
+
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            window.location.href = 'home.html';
+        });
+        document.getElementById('signupForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            window.location.href = 'home.html';
+        });
     </script>
     <script src="common.js"></script>
 </body>
