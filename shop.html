@@ -131,6 +131,46 @@
         .add-prize-btn:hover { opacity: 0.9; }
 
     </style>
+    <style>
+        /* Modal styles */
+        .modal-overlay.hidden { display: none; }
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.35);
+            z-index: 9999;
+            padding: 20px;
+        }
+        .modal-box {
+            width: 100%;
+            max-width: 520px;
+            background: #f5f5f6; /* light grey */
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            text-align: left;
+        }
+        .modal-message {
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+        .modal-input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #d0d0d0;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        .modal-buttons { text-align: right; }
+        .modal-buttons .add-prize-btn { margin-left: 8px; }
+        .modal-buttons .cancel { background: #777; }
+    </style>
 </head>
 <body>
     <div class="page-container">
@@ -179,7 +219,7 @@
     </div>
 
     <script>
-        /* --- SHOP LOGIC --- */
+        /* --- SHOP LOGIC (with custom modal dialogs) --- */
         const shopScoreSpan = document.getElementById('shopScore');
         
         // 1. LOAD POINTS from LocalStorage
@@ -192,18 +232,100 @@
             localStorage.setItem('cloudUserScore', currentScore);
         }
 
-        // 2. ADD PRIZE FUNCTION
-        function addNewPrize(tier) {
-            const name = prompt("Enter prize name (e.g., 'Airpods'):");
-            if (!name) return;
+        /* Modal elements (injected into DOM) */
+        (function createModalElements(){
+            const overlay = document.createElement('div');
+            overlay.id = 'modal-overlay';
+            overlay.className = 'modal-overlay hidden';
+            overlay.innerHTML = `
+                <div class="modal-box" role="dialog" aria-modal="true">
+                    <div id="modalMessage" class="modal-message"></div>
+                    <input id="modalInput" class="modal-input" />
+                    <div class="modal-buttons">
+                        <button id="modalOk" class="add-prize-btn">OK</button>
+                        <button id="modalCancel" class="add-prize-btn cancel">Cancel</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        })();
 
-            const cost = prompt("Enter cost in points:");
-            if (!cost || isNaN(cost)) {
-                alert("Please enter a valid number for points.");
+        function showModal(mode, message, defaultValue) {
+            return new Promise((resolve) => {
+                const overlay = document.getElementById('modal-overlay');
+                const msgEl = document.getElementById('modalMessage');
+                const inputEl = document.getElementById('modalInput');
+                const okBtn = document.getElementById('modalOk');
+                const cancelBtn = document.getElementById('modalCancel');
+
+                msgEl.textContent = message || '';
+
+                inputEl.style.display = (mode === 'prompt') ? 'block' : 'none';
+                if(mode === 'prompt') {
+                    inputEl.value = defaultValue || '';
+                    setTimeout(()=> inputEl.focus(), 10);
+                } else {
+                    setTimeout(()=> okBtn.focus(), 10);
+                }
+
+                overlay.classList.remove('hidden');
+
+                function cleanup() {
+                    okBtn.removeEventListener('click', onOk);
+                    cancelBtn.removeEventListener('click', onCancel);
+                    inputEl.removeEventListener('keydown', onKey);
+                    overlay.classList.add('hidden');
+                }
+
+                function onOk() {
+                    if(mode === 'prompt') {
+                        cleanup();
+                        resolve(inputEl.value);
+                    } else if(mode === 'confirm') {
+                        cleanup();
+                        resolve(true);
+                    } else { // alert
+                        cleanup();
+                        resolve(true);
+                    }
+                }
+
+                function onCancel() {
+                    cleanup();
+                    if(mode === 'prompt') resolve(null);
+                    else resolve(false);
+                }
+
+                function onKey(e) {
+                    if(e.key === 'Enter') onOk();
+                    if(e.key === 'Escape') onCancel();
+                }
+
+                okBtn.addEventListener('click', onOk);
+                cancelBtn.addEventListener('click', onCancel);
+                inputEl.addEventListener('keydown', onKey);
+            });
+        }
+
+        function customPrompt(message, defaultValue) { return showModal('prompt', message, defaultValue); }
+        function customConfirm(message) { return showModal('confirm', message); }
+        function customAlert(message) { return showModal('alert', message); }
+
+        // 2. ADD PRIZE FUNCTION (uses customPrompt)
+        async function addNewPrize(tier) {
+            const name = await customPrompt("Enter prize name (e.g., 'Airpods'):", '');
+            if (name === null || name.trim() === '') return;
+
+            const costInput = await customPrompt('Enter cost in points:', '');
+            if (costInput === null) return;
+
+            const cost = parseInt(costInput.trim(), 10);
+            if (Number.isNaN(cost)) {
+                await customAlert('Please enter a valid number for points.');
                 return;
             }
 
-            createPrizeCard(tier, name, parseInt(cost));
+            createPrizeCard(tier, name.trim(), cost);
         }
 
         // 3. CREATE CARD HTML
@@ -227,48 +349,42 @@
             container.appendChild(card);
         }
 
-        // 4. PURCHASE LOGIC
-        function purchaseItem(event, name, cost, cardElement) {
-            // Prevent purchase if clicking edit/delete buttons
+        // 4. PURCHASE LOGIC (uses customConfirm/customAlert)
+        async function purchaseItem(event, name, cost, cardElement) {
             if(event.target.tagName === 'BUTTON') return;
 
             if (currentScore >= cost) {
-                const confirmBuy = confirm(`Buy "${name}" for ${cost} points?`);
+                const confirmBuy = await customConfirm(`Buy \"${name}\" for ${cost} points?`);
                 if (confirmBuy) {
                     currentScore -= cost;
                     updateScoreDisplay();
-                    alert(`Enjoy your ${name}!`);
-                    
-                    // Optional: Remove item after purchase? 
-                    // For now, we keep it in the shop so they can buy it again.
+                    await customAlert(`Enjoy your ${name}!`);
                 }
             } else {
-                alert(`You need ${cost - currentScore} more points to buy this!`);
+                await customAlert(`You need ${cost - currentScore} more points to buy this!`);
             }
         }
 
-        // 5. EDIT & DELETE
-        function deletePrize(event, btn) {
-            event.stopPropagation(); // Stop the "Purchase" click from firing
-            if(confirm("Remove this item from the shop?")) {
-                btn.closest('.prize-card').remove();
-            }
+        // 5. EDIT & DELETE (use customPrompt/customConfirm)
+        async function deletePrize(event, btn) {
+            event.stopPropagation();
+            const confirmed = await customConfirm('Remove this item from the shop?');
+            if (confirmed) btn.closest('.prize-card').remove();
         }
 
-        function editPrize(event, btn) {
+        async function editPrize(event, btn) {
             event.stopPropagation();
             const card = btn.closest('.prize-card');
             const nameEl = card.querySelector('.prize-name');
             const costEl = card.querySelector('.prize-cost');
 
-            const newName = prompt("Edit Name:", nameEl.innerText);
-            if(newName) nameEl.innerText = newName;
+            const newName = await customPrompt('Edit Name:', nameEl.innerText);
+            if(newName !== null && newName.trim() !== '') nameEl.innerText = newName.trim();
 
-            const newCost = prompt("Edit Cost:", parseInt(costEl.innerText));
-            if(newCost && !isNaN(newCost)) {
-                costEl.innerText = newCost + " pts";
-                // We need to update the onclick logic too, but simpler to just recreate the card
-                // For this basic version, visual update is fine.
+            const currentCostValue = parseInt(costEl.innerText, 10) || 0;
+            const newCost = await customPrompt('Edit Cost:', String(currentCostValue));
+            if(newCost !== null && !isNaN(parseInt(newCost, 10))) {
+                costEl.innerText = parseInt(newCost, 10) + ' pts';
             }
         }
     </script>
