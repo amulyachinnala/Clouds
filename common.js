@@ -63,11 +63,18 @@
 
   // On page load, if navigated here via overlay flag, show overlay then fade
   function onLoadCheck() {
-    if (sessionStorage.getItem(SESSION_KEY) === '1') {
+    const wasStarted = sessionStorage.getItem(SESSION_KEY) === '1';
+    if (wasStarted) {
       sessionStorage.removeItem(SESSION_KEY);
       showOverlay();
-      setTimeout(() => hideOverlay(FADE_MS), 900);
+      // slightly longer when arriving from another page
+      setTimeout(() => hideOverlay(FADE_MS), 1100);
+      return;
     }
+
+    // Show overlay on every page load/refresh, then fade out
+    showOverlay();
+    setTimeout(() => hideOverlay(FADE_MS), 900);
   }
 
   // Init
