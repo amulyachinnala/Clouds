@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Budget - Lemoney</title>
+<<<<<<< Updated upstream
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -131,7 +132,48 @@
                 <input type="text" id="item-name" placeholder="Item name">
                 <input type="number" id="item-price" placeholder="$ price">
                 <button onclick="addItem()">Add</button>
+=======
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="page-container">
+        <a href="home.html" class="logo-link">
+            <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney logo" class="logo">
+        </a>
+
+        <nav class="nav-bar">
+            <a href="home.html" class="nav-link">Home</a>
+            <a href="budget.html" class="nav-link active">Budget</a>
+            <a href="task.html" class="nav-link">Task</a>
+            <a href="shop.html" class="nav-link">Shop</a>
+        </nav>
+
+        <div class="budget-content">
+            
+            <div class="chart-column">
+                <h3>Spending Breakdown</h3>
+                <div class="pie-chart-container">
+                    <canvas id="spending-chart" width="600" height="600"></canvas>
+                    <ul id="spending-chart-legend"></ul>
+                </div>
             </div>
+
+            <div class="budget-text">
+                <h2>Budget Tracker</h2>
+                <p>Track your finances here.</p>
+            </div>
+
+            <div class="chart-column">
+                <h3>Main Budget</h3>
+                <div class="pie-chart-container">
+                    <canvas id="pie-chart" width="600" height="600"></canvas>
+                    <ul id="pie-chart-legend"></ul>
+                </div>
+>>>>>>> Stashed changes
+            </div>
+
         </div>
 
         <!-- RIGHT PIE -->
@@ -242,4 +284,8 @@
 </script>
 
 </body>
+<<<<<<< Updated upstream
 </html>
+=======
+</html>
+>>>>>>> Stashed changes
