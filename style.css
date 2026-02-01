@@ -40,8 +40,12 @@ body {
 .day-cell { height: 44px; border-radius: 8px; background: #f9fafb; display: flex; align-items: center; justify-content: center; }
 
 /* Helpers & Overlays */
+#hidden { /* placeholder - not used */ }
+
+/* Generic hidden utility (keeps compatibility across files) */
 .hidden { display: none; }
 
+/* Loading overlay (use a dedicated fade class to avoid colliding with .hidden) */
 #loadingOverlay {
     position: fixed;
     inset: 0;
@@ -50,10 +54,12 @@ body {
     justify-content: center;
     background: rgba(255,255,255,0.98);
     z-index: 9999;
-    transition: opacity 2s ease;
+    transition: opacity 1s ease;
+    opacity: 1;
 }
 
-#loadingOverlay.hidden { opacity: 0; pointer-events: none; }
+/* Apply this class to fade the overlay out without switching display immediately */
+#loadingOverlay.overlay-fade-out { opacity: 0; pointer-events: none; }
 #loadingGif { max-width: 40%; width: auto; height: auto; }
 
 body.no-scroll { overflow: hidden; }
