@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lemoney - Sign In</title>
-    <link rel="icon" type="image/png" href="Graphics/lemonie%20happy.png">
-    <link rel="shortcut icon" href="Graphics/lemonie%20happy.png">
+    <title>Lemoney - Authentication</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -16,18 +14,7 @@
             --secondary-text: #6e6e73;
             --input-bg: #f2f4f7;
             --button-bg: #1a1a1a;
-            --bg-gradient-top: #c4e0f3;
-            --bg-gradient-bottom: #eef6fc;
         }
-            .modal-input {
-            width: 100%;
-            padding: 10px 12px;
-            border-radius: 8px;
-            border: 1px solid #d0d0d0;
-            margin-bottom: 12px;
-            box-sizing: border-box;
-            font-size: 1rem;
-            }
             
         * {
             margin: 0;
@@ -38,7 +25,7 @@
 
         body {
             /* Cloudy Background */
-            background: url('https://t4.ftcdn.net/jpg/00/90/76/59/360_F_90765953_xgLAsm6N7VZD1zMlO9CA8t7qwBpZ4lSr.jpg');
+            background: url('https://static.vecteezy.com/system/resources/thumbnails/026/421/357/original/cartoon-animated-blue-sky-moving-background-with-clouds-seamless-loop-video.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -50,24 +37,30 @@
             overflow: hidden;
         }
 
-        /* Top Left Logo */
-        .brand-logo {
+        /* --- LOGO STYLES --- */
+        .brand-logo-container {
             position: absolute;
             top: 25px;
             left: 30px;
             display: flex;
             align-items: center;
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--primary-text);
+            gap: 12px;
+            z-index: 10; 
         }
 
-        .brand-logo i {
-            margin-right: 8px;
-            font-size: 1.2rem;
+        .brand-avatar-img {
+            height: 75px;
+            width: auto;
+            display: block;
         }
 
-        /*Login Box */
+        .brand-text-img {
+            height: 50px;
+            width: auto;
+            display: block;
+        }
+
+        /* Card Container */
         .login-card {
             background: rgba(255, 255, 255, 0.95); 
             padding: 48px 40px;
@@ -76,21 +69,14 @@
             width: 100%;
             max-width: 420px;
             text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 5;
         }
 
-        /* The top icon box */
-        .card-icon-top {
-            width: 50px;
-            height: 50px;
-            background: #fff;
-            border: 2px solid #e6e8ec;
-            border-radius: 14px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto 24px auto;
-            font-size: 1.2rem;
-            color: var(--primary-text);
+        /* Utility Class to hide elements */
+        .hidden {
+            display: none;
         }
 
         h1 {
@@ -178,20 +164,39 @@
             font-weight: 600;
             cursor: pointer;
             transition: opacity 0.2s;
+            margin-bottom: 20px;
         }
 
         .btn-primary:hover {
             opacity: 0.9;
         }
 
-        /* Divider with text */
+        /* Switch Text (Sign up / Sign in toggle) */
+        .switch-text {
+            font-size: 0.9rem;
+            color: var(--secondary-text);
+            margin-bottom: 20px;
+        }
+        
+        .switch-text a {
+            color: var(--primary-text);
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .switch-text a:hover {
+            text-decoration: underline;
+        }
+
+        /* Divider */
         .divider {
             display: flex;
             align-items: center;
             text-align: center;
             color: var(--secondary-text);
             font-size: 0.85rem;
-            margin: 24px 0;
+            margin: 0 0 24px 0;
         }
 
         .divider::before,
@@ -230,7 +235,6 @@
             transform: translateY(-2px);
         }
 
-        /* Style the images inside the buttons */
         .social-btn img {
             width: 24px;
             height: 24px;
@@ -241,38 +245,75 @@
 </head>
 <body>
 
-    <header class="brand-logo">
-        <i class="fa-solid fa-cloud"></i> 
-        <span>Cloud</span>
+    <header class="brand-logo-container">
+        <img src="Graphics/lemonie satisfied.png" alt="Lemonie" class="brand-avatar-img">
+        <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney" class="brand-text-img">
     </header>
+
     <main class="login-card">
-        <h1>Sign in with email</h1>
-        <p class="subtitle">Manage your finances while being productive. For free</p>
+        
+        <div id="loginContainer">
+            <h1>Sign in</h1>
+            <p class="subtitle">Manage your finances while being productive. For free.</p>
 
-        <form id="loginForm">
-            <div class="input-group">
-                <i class="fa-solid fa-envelope field-icon"></i>
-                <input type="email" placeholder="Email" required>
-            </div>
+            <form id="loginForm">
+                <div class="input-group">
+                    <i class="fa-solid fa-envelope field-icon"></i>
+                    <input type="email" placeholder="Email" required>
+                </div>
 
-            <div class="input-group">
-                <i class="fa-solid fa-lock field-icon"></i>
-                <input type="password" id="passwordField" placeholder="Password" required>
-                <i class="fa-solid fa-eye-slash toggle-password" id="togglePasswordBtn"></i>
-            </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-lock field-icon"></i>
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                    <i class="fa-solid fa-eye-slash toggle-password" onclick="togglePass('loginPassword', this)"></i>
+                </div>
 
-            <a href="#" class="forgot-pass-link">Forgot password?</a>
+                <a href="#" class="forgot-pass-link">Forgot password?</a>
 
-            <button type="submit" class="btn-primary">Get Started</button>
-        </form>
+                <button type="submit" class="btn-primary">Sign In</button>
+            </form>
+
+            <p class="switch-text">
+                Don't have an account? <a id="showSignup">Sign up</a>
+            </p>
+        </div>
+
+        <div id="signupContainer" class="hidden">
+            <h1>Create account</h1>
+            <p class="subtitle">Start your journey with Lemoney today.</p>
+
+            <form id="signupForm">
+                <div class="input-group">
+                    <i class="fa-solid fa-user field-icon"></i>
+                    <input type="text" placeholder="Full Name" required>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-envelope field-icon"></i>
+                    <input type="email" placeholder="Email" required>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-lock field-icon"></i>
+                    <input type="password" id="signupPassword" placeholder="Password" required>
+                    <i class="fa-solid fa-eye-slash toggle-password" onclick="togglePass('signupPassword', this)"></i>
+                </div>
+
+                <button type="submit" class="btn-primary">Sign Up</button>
+            </form>
+
+            <p class="switch-text">
+                Already have an account? <a id="showLogin">Sign in</a>
+            </p>
+        </div>
 
         <div class="divider">
-            <span>Or sign in with</span>
+            <span>Or continue with</span>
         </div>
 
         <div class="social-login-group">
             <button class="social-btn">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google">
+                <img src="https://cdn-icons-png.flaticon.com/512/300/300221.png" alt="Google">
             </button>
             <button class="social-btn">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" alt="Facebook">
@@ -285,29 +326,45 @@
     </main>
 
     <script>
-        // 1. Select the elements we need from the HTML
+        // 1. Elements
+        const loginContainer = document.getElementById('loginContainer');
+        const signupContainer = document.getElementById('signupContainer');
+        const showSignupBtn = document.getElementById('showSignup');
+        const showLoginBtn = document.getElementById('showLogin');
+        
         const loginForm = document.getElementById('loginForm');
-        const passwordField = document.getElementById('passwordField');
-        const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+        const signupForm = document.getElementById('signupForm');
 
-        // 2. Handle the "Get Started" (Submit) Button
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevents the page from refreshing
-            
+        // 2. Toggle Logic
+        showSignupBtn.addEventListener('click', () => {
+            loginContainer.classList.add('hidden');
+            signupContainer.classList.remove('hidden');
+        });
+
+        showLoginBtn.addEventListener('click', () => {
+            signupContainer.classList.add('hidden');
+            loginContainer.classList.remove('hidden');
+        });
+
+        // 3. Form Submission (Redirect)
+        function handleAuth(e) {
+            e.preventDefault(); 
             // Redirects the user to the Home page
             window.location.href = 'home.html'; 
-        });
+        }
 
-        // 3. Handle the Password "Eye" Icon
-        togglePasswordBtn.addEventListener('click', function () {
-            // Check if current type is password or text
-            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordField.setAttribute('type', type);
+        loginForm.addEventListener('submit', handleAuth);
+        signupForm.addEventListener('submit', handleAuth);
+
+        // 4. Password Visibility Toggle
+        function togglePass(fieldId, iconElement) {
+            const field = document.getElementById(fieldId);
+            const type = field.getAttribute('type') === 'password' ? 'text' : 'password';
+            field.setAttribute('type', type);
             
-            // Toggle the icon design (slash vs no slash)
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
-        });
+            iconElement.classList.toggle('fa-eye');
+            iconElement.classList.toggle('fa-eye-slash');
+        }
     </script>
 </body>
 </html>
