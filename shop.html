@@ -3,19 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <title>Shop - Cloud</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* --- Shop Specific Styles --- */
+        
+        .score-board {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            color: #1a1a1a;
+            background: #f9fafb;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 12px;
+        }
+        .score-board span { color: #4CAF50; }
+
+        /* Tier Container */
+        .tier-section {
+            margin-bottom: 40px;
+            text-align: left;
+            position: relative;
+        }
+
+        /* The separating line */
+        .tier-separator {
+            border: 0;
+            height: 1px;
+            background: #e5e5e5;
+            margin: 40px 0;
+        }
+
+        .tier-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid; /* Colored underline */
+        }
+        
+        .tier-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Tier Colors */
+        .gold-theme { border-color: #FFD700; color: #bfa100; }
+        .silver-theme { border-color: #C0C0C0; color: #7f8c8d; }
+        .bronze-theme { border-color: #CD7F32; color: #a05a2c; }
+
+        /* Item Grid */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        /* Individual Prize Card */
+        .prize-card {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .prize-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            border-color: #1a1a1a;
+        }
+
+        .prize-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .prize-cost {
+            font-size: 0.9rem;
+            color: #6e6e73;
+            background: #f2f4f7;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        /* Action Buttons (Edit/Delete) */
+        .card-actions {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: #9aa0a6;
+            padding: 5px;
+        }
+        .action-btn:hover { color: #1a1a1a; }
+        .action-btn.delete:hover { color: #d93025; }
+
+        /* Add Button */
+        .add-prize-btn {
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .add-prize-btn:hover { opacity: 0.9; }
+
+    </style>
 </head>
 <body>
     <div class="page-container">
         <h1 class="main-title">CLOUD</h1>
+        
         <nav class="nav-bar">
             <a href="home.html" class="nav-link">Home</a>
             <a href="budget.html" class="nav-link">Budget</a>
             <a href="task.html" class="nav-link">Task</a>
             <a href="shop.html" class="nav-link active">Shop</a>
         </nav>
-        <h2>Marketplace</h2>
-        <p>Browse items here.</p>
+
+        <div class="score-board">
+            Available Points: <span id="shopScore">0</span>
+        </div>
+
+        <div class="tier-section">
+            <div class="tier-header gold-theme">
+                <span class="tier-title">Gold Tier</span>
+                <button class="add-prize-btn" onclick="addNewPrize('gold')">+ Add Gold Prize</button>
+            </div>
+            <div class="items-grid" id="gold-list">
+                </div>
+        </div>
+
+        <hr class="tier-separator">
+
+        <div class="tier-section">
+            <div class="tier-header silver-theme">
+                <span class="tier-title">Silver Tier</span>
+                <button class="add-prize-btn" onclick="addNewPrize('silver')">+ Add Silver Prize</button>
+            </div>
+            <div class="items-grid" id="silver-list"></div>
+        </div>
+
+        <hr class="tier-separator">
+
+        <div class="tier-section">
+            <div class="tier-header bronze-theme">
+                <span class="tier-title">Bronze Tier</span>
+                <button class="add-prize-btn" onclick="addNewPrize('bronze')">+ Add Bronze Prize</button>
+            </div>
+            <div class="items-grid" id="bronze-list"></div>
+        </div>
+
     </div>
+
+    <script>
+        /* --- SHOP LOGIC --- */
+        const shopScoreSpan = document.getElementById('shopScore');
+        
+        // 1. LOAD POINTS from LocalStorage
+        // We use 'cloudUserScore' as the key to save data between pages
+        let currentScore = parseInt(localStorage.getItem('cloudUserScore')) || 0;
+        shopScoreSpan.textContent = currentScore;
+
+        function updateScoreDisplay() {
+            shopScoreSpan.textContent = currentScore;
+            localStorage.setItem('cloudUserScore', currentScore);
+        }
+
+        // 2. ADD PRIZE FUNCTION
+        function addNewPrize(tier) {
+            const name = prompt("Enter prize name (e.g., 'Airpods'):");
+            if (!name) return;
+
+            const cost = prompt("Enter cost in points:");
+            if (!cost || isNaN(cost)) {
+                alert("Please enter a valid number for points.");
+                return;
+            }
+
+            createPrizeCard(tier, name, parseInt(cost));
+        }
+
+        // 3. CREATE CARD HTML
+        function createPrizeCard(tier, name, cost) {
+            const listId = tier + '-list';
+            const container = document.getElementById(listId);
+
+            const card = document.createElement('div');
+            card.className = 'prize-card';
+            card.onclick = (e) => purchaseItem(e, name, cost, card);
+
+            card.innerHTML = `
+                <span class="prize-name">${name}</span>
+                <span class="prize-cost">${cost} pts</span>
+                <div class="card-actions">
+                    <button class="action-btn" onclick="editPrize(event, this)">Edit</button>
+                    <button class="action-btn delete" onclick="deletePrize(event, this)">Delete</button>
+                </div>
+            `;
+
+            container.appendChild(card);
+        }
+
+        // 4. PURCHASE LOGIC
+        function purchaseItem(event, name, cost, cardElement) {
+            // Prevent purchase if clicking edit/delete buttons
+            if(event.target.tagName === 'BUTTON') return;
+
+            if (currentScore >= cost) {
+                const confirmBuy = confirm(`Buy "${name}" for ${cost} points?`);
+                if (confirmBuy) {
+                    currentScore -= cost;
+                    updateScoreDisplay();
+                    alert(`Enjoy your ${name}!`);
+                    
+                    // Optional: Remove item after purchase? 
+                    // For now, we keep it in the shop so they can buy it again.
+                }
+            } else {
+                alert(`You need ${cost - currentScore} more points to buy this!`);
+            }
+        }
+
+        // 5. EDIT & DELETE
+        function deletePrize(event, btn) {
+            event.stopPropagation(); // Stop the "Purchase" click from firing
+            if(confirm("Remove this item from the shop?")) {
+                btn.closest('.prize-card').remove();
+            }
+        }
+
+        function editPrize(event, btn) {
+            event.stopPropagation();
+            const card = btn.closest('.prize-card');
+            const nameEl = card.querySelector('.prize-name');
+            const costEl = card.querySelector('.prize-cost');
+
+            const newName = prompt("Edit Name:", nameEl.innerText);
+            if(newName) nameEl.innerText = newName;
+
+            const newCost = prompt("Edit Cost:", parseInt(costEl.innerText));
+            if(newCost && !isNaN(newCost)) {
+                costEl.innerText = newCost + " pts";
+                // We need to update the onclick logic too, but simpler to just recreate the card
+                // For this basic version, visual update is fine.
+            }
+        }
+    </script>
+    <script src="tour.js"></script>
 </body>
 </html>

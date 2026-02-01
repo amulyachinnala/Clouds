@@ -3,19 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <title>Tasks - Cloud</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* --- Task Specific Styles --- */
+        
+        .score-board {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+        .score-board span {
+            color: #4CAF50;
+            transition: transform 0.2s; /* Animation for score pop */
+            display: inline-block;
+        }
+        /* Class to animate the score getting bigger briefly */
+        .score-pop {
+            transform: scale(1.5);
+        }
+
+        .task-input-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        #taskInput {
+            padding: 12px;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            width: 250px;
+            font-size: 1rem;
+        }
+        
+        #difficultySelect {
+            padding: 12px;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            background: white;
+            font-size: 1rem;
+        }
+
+        #addTaskBtn {
+            padding: 12px 24px;
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        #addTaskBtn:hover { opacity: 0.9; }
+
+        #taskList {
+            list-style: none;
+            padding: 0;
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        /* Individual Task Item */
+        .task-item {
+            background: #f9fafb;
+            border: 1px solid #e5e5e5;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            
+            /* Logic for the smooth fade out */
+            transition: all 0.5s ease;
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* This class is added when checking the box */
+        .task-item.fade-out {
+            opacity: 0;
+            transform: translateX(50px); /* Slides to the right */
+            background-color: #e6f4ea; /* Turns slightly green before vanishing */
+        }
+
+        .task-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .task-text {
+            font-size: 1.05rem;
+            font-weight: 500;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .badge-low { background: #e6f4ea; color: #137333; }
+        .badge-med { background: #feefc3; color: #b06000; }
+        .badge-hard { background: #fce8e6; color: #c5221f; }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #9aa0a6;
+            cursor: pointer;
+            padding: 5px;
+        }
+        .delete-btn:hover { color: #d93025; }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #4CAF50; /* Makes the checkbox green */
+        }
+    </style>
 </head>
 <body>
     <div class="page-container">
         <h1 class="main-title">CLOUD</h1>
+        
         <nav class="nav-bar">
             <a href="home.html" class="nav-link">Home</a>
             <a href="budget.html" class="nav-link">Budget</a>
             <a href="task.html" class="nav-link active">Task</a>
             <a href="shop.html" class="nav-link">Shop</a>
         </nav>
-        <h2>Task Manager</h2>
-        <p>Your to-do list goes here.</p>
+
+        <div class="score-board">
+            Total Points: <span id="totalScore">0</span>
+        </div>
+
+        <div class="task-input-area">
+            <input type="text" id="taskInput" placeholder="Add a new task..." />
+            <select id="difficultySelect">
+                <option value="1">Low (1 pt)</option>
+                <option value="3">Medium (3 pts)</option>
+                <option value="5">Hard (5 pts)</option>
+            </select>
+            <button id="addTaskBtn">Add Task</button>
+        </div>
+
+        <ul id="taskList">
+            </ul>
     </div>
+
+    <script>
+        const taskInput = document.getElementById('taskInput');
+        const difficultySelect = document.getElementById('difficultySelect');
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        const taskList = document.getElementById('taskList');
+        const totalScoreSpan = document.getElementById('totalScore');
+
+        // 1. LOAD POINTS FROM STORAGE (Connects to Shop)
+        // If there is no saved score, start at 0
+        let currentScore = parseInt(localStorage.getItem('cloudUserScore')) || 0;
+        
+        // Display initial score
+        totalScoreSpan.textContent = currentScore;
+
+        function addTask() {
+            const text = taskInput.value;
+            const points = parseInt(difficultySelect.value); 
+            
+            if (text === "") {
+                alert("Please write a task name!");
+                return;
+            }
+
+            let badgeClass = 'badge-low';
+            let difficultyLabel = 'Low';
+            if(points === 3) { badgeClass = 'badge-med'; difficultyLabel = 'Medium'; }
+            if(points === 5) { badgeClass = 'badge-hard'; difficultyLabel = 'Hard'; }
+
+            const li = document.createElement('li');
+            li.className = 'task-item';
+            
+            li.innerHTML = `
+                <div class="task-left">
+                    <input type="checkbox" class="complete-checkbox">
+                    <div>
+                        <span class="task-text">${text}</span>
+                        <span class="badge ${badgeClass}">${difficultyLabel} (${points} pts)</span>
+                    </div>
+                </div>
+                <button class="delete-btn"><i class="fa-solid fa-trash"></i></button>
+            `;
+
+            // --- CHECKBOX LOGIC (Claim Reward) ---
+            const checkbox = li.querySelector('.complete-checkbox');
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    // A. Add Points
+                    currentScore += points;
+                    totalScoreSpan.textContent = currentScore;
+                    
+                    // B. Save to LocalStorage immediately
+                    localStorage.setItem('cloudUserScore', currentScore);
+
+                    // C. Animate the score number (make it pop)
+                    totalScoreSpan.classList.add('score-pop');
+                    setTimeout(() => totalScoreSpan.classList.remove('score-pop'), 200);
+
+                    // D. Animate the row fading out
+                    li.classList.add('fade-out');
+
+                    // E. Remove from HTML after 0.5s
+                    setTimeout(() => {
+                        li.remove();
+                    }, 500); 
+                }
+            });
+
+            // --- DELETE BUTTON LOGIC (No Points) ---
+            const deleteBtn = li.querySelector('.delete-btn');
+            deleteBtn.addEventListener('click', function() {
+                li.remove();
+            });
+
+            taskList.appendChild(li);
+            taskInput.value = "";
+        }
+
+        addTaskBtn.addEventListener('click', addTask);
+        
+        taskInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addTask();
+        });
+
+    </script>
+    
+    <script src="tour.js"></script>
 </body>
 </html>
