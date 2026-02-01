@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>Tasks</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
@@ -9,6 +10,18 @@
     <link rel="stylesheet" href="style.css">
 
     <style>
+        /* --- LOGO STYLES --- */
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            max-width: 150px; 
+            height: auto;
+            cursor: pointer;
+        }
+
         /* --- PROGRESS BAR SECTION --- */
         .progress-section {
             display: flex;
@@ -20,48 +33,78 @@
             padding: 20px;
             border-radius: 16px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            max-width: 600px;
+            max-width: 650px; 
             margin-left: auto;
             margin-right: auto;
         }
 
-        /* 1. The Avatar Box */
+        /* Avatar Box */
         .avatar-box {
-            width: 60px;   /* Slightly bigger for images */
+            width: 60px;
             height: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #f0f4f8; /* Background circle color */
+            background: #f0f4f8;
             border-radius: 50%;
-            overflow: hidden; /* Clips square images to circles */
+            overflow: hidden;
+            flex-shrink: 0;
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         
-        /* The Actual Image Tag */
         .avatar-box img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Ensures image fills the circle */
+            object-fit: cover;
         }
         
-        /* 2. The Text (Now on the Right) */
+        /* Text*/
         .progress-text {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: #1a1a1a;
-            min-width: 80px; 
-            text-align: left; /* Changed alignment */
+            min-width: 70px; 
+            text-align: right; 
+            white-space: nowrap; 
         }
 
-        /* 3. The Progress Bar Container */
+        /* WRAPPER FOR HOVER EFFECT --- */
+        .progress-wrapper {
+            flex-grow: 1;
+            position: relative; 
+            cursor: pointer;
+        }
+
+        /* The Tooltip (Hidden by default) */
+        .progress-wrapper::after {
+            content: attr(data-percent); 
+            position: absolute;
+            top: -35px; 
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a1a;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0; 
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        /* Show Tooltip on Hover */
+        .progress-wrapper:hover::after {
+            opacity: 1;
+        }
+
+        /* Progress Bar Container */
         .progress-track {
-            flex-grow: 1; 
             height: 12px;
             background-color: #e5e5e5;
             border-radius: 20px;
             overflow: hidden;
-            position: relative;
         }
 
         .progress-fill {
@@ -163,6 +206,12 @@
 <body>
     <div class="page-container">
         
+        <div class="logo-container">
+            <a href="home.html" title="Home">
+                <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney logo" class="logo">
+            </a>
+        </div>
+
         <nav class="nav-bar">
             <a href="home.html" class="nav-link">Home</a>
             <a href="budget.html" class="nav-link">Budget</a>
@@ -175,35 +224,49 @@
                 <img id="avatarImg" src="Graphics/lemonie front view.png" alt="Avatar">
             </div>
             
-            <div class="progress-track">
-                <div id="progressBar" class="progress-fill"></div>
+            <div id="progressWrapper" class="progress-wrapper" data-percent="0%">
+                <div class="progress-track">
+                    <div id="progressBar" class="progress-fill"></div>
+                </div>
             </div>
 
-            <div id="progressText" class="progress-text">0/100</div>
+            <div id="progressText" class="progress-text">0/0</div>
         </div>
 
         <div class="task-input-area">
             <input type="text" id="taskInput" placeholder="Add a new task..." />
             <select id="difficultySelect">
-                <option value="1">Low (1 pt)</option>
-                <option value="3">Medium (3 pts)</option>
-                <option value="5">Hard (5 pts)</option>
-            </select>
+                </select>
             <button id="addTaskBtn">Add Task</button>
         </div>
 
         <ul id="taskList">
-            </ul>
+        </ul>
     </div>
 
     <script>
-        const taskInput = document.getElementById('taskInput');
+        // --- 1. CONFIGURATION ---
+        const spending_pool = 0.2 * 2000; // 400
+        
+        const lowPts = Math.round(spending_pool * 0.01);  // 4
+        const medPts = Math.round(spending_pool * 0.02);  // 8
+        const hardPts = Math.round(spending_pool * 0.03); // 12
+
+        // --- 2. UPDATE DROPDOWN ---
         const difficultySelect = document.getElementById('difficultySelect');
+        difficultySelect.innerHTML = `
+            <option value="${lowPts}">Low (${lowPts} pts)</option>
+            <option value="${medPts}">Medium (${medPts} pts)</option>
+            <option value="${hardPts}">Hard (${hardPts} pts)</option>
+        `;
+
+        // --- 3. ELEMENTS ---
+        const taskInput = document.getElementById('taskInput');
         const addTaskBtn = document.getElementById('addTaskBtn');
         const taskList = document.getElementById('taskList');
         
-        // Progress UI Elements
         const progressBar = document.getElementById('progressBar');
+        const progressWrapper = document.getElementById('progressWrapper'); 
         const progressText = document.getElementById('progressText');
         const avatarBox = document.getElementById('avatarBox');
         const avatarImg = document.getElementById('avatarImg');
@@ -213,6 +276,7 @@
             'Graphics/lemonie happy.png', 
             'Graphics/lemonie satisfied.png',
             'Graphics/lemonie talks.png',
+            'Graphics/lemonie front view.png'
         ];
         
         let avatarIndex = 0;
@@ -222,28 +286,28 @@
         updateProgressUI();
 
         function updateProgressUI() {
-            // Calculate Remainder (Modulo 100)
-            const currentLevelProgress = currentLifetimeScore % 100;
+            // Update Text
+            progressText.textContent = `${currentLifetimeScore}/${spending_pool}`;
             
-            // Update Text and Width
-            progressText.textContent = `${currentLevelProgress}/100`;
-            progressBar.style.width = `${currentLevelProgress}%`;
+            // Calculate Percentage
+            let percent = (currentLifetimeScore / spending_pool) * 100;
+            if (percent > 100) percent = 100;
+            
+            // Update Bar Width
+            progressBar.style.width = `${percent}%`;
+
+            // Update Tooltip Text (The hover number)
+            progressWrapper.setAttribute('data-percent', Math.round(percent) + '%');
         }
 
-        // Function to Cycle Avatar
         function cycleAvatar() {
-            avatarIndex = (avatarIndex + 1) % myImages.length; // 0 -> 1 -> 2 -> 0
+            avatarIndex = (avatarIndex + 1) % myImages.length; 
             
-            // Animate flip
             avatarBox.style.transform = "scale(0.8) rotate(10deg)";
-            
             setTimeout(() => {
-                // Change the SOURCE of the image tag
                 avatarImg.src = myImages[avatarIndex];
-                
                 avatarBox.style.transform = "scale(1.1) rotate(0deg)";
             }, 150);
-
             setTimeout(() => {
                 avatarBox.style.transform = "scale(1)";
             }, 300);
@@ -260,8 +324,15 @@
 
             let badgeClass = 'badge-low';
             let difficultyLabel = 'Low';
-            if(points === 3) { badgeClass = 'badge-med'; difficultyLabel = 'Medium'; }
-            if(points === 5) { badgeClass = 'badge-hard'; difficultyLabel = 'Hard'; }
+            
+            if(points === medPts) { 
+                badgeClass = 'badge-med'; 
+                difficultyLabel = 'Medium'; 
+            }
+            if(points === hardPts) { 
+                badgeClass = 'badge-hard'; 
+                difficultyLabel = 'Hard'; 
+            }
 
             const li = document.createElement('li');
             li.className = 'task-item';
@@ -277,7 +348,6 @@
                 <button class="delete-btn"><i class="fa-solid fa-trash"></i></button>
             `;
 
-            // CHECKBOX LOGIC
             const checkbox = li.querySelector('.complete-checkbox');
             checkbox.addEventListener('change', function() {
                 if (this.checked) {
@@ -292,7 +362,6 @@
                 }
             });
 
-            // DELETE LOGIC
             const deleteBtn = li.querySelector('.delete-btn');
             deleteBtn.addEventListener('click', function() {
                 li.remove();

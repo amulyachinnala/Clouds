@@ -7,7 +7,6 @@ from sqlalchemy.orm import Session
 
 from .models import Month, TaskTemplate, TaskInstance, ShopItem, Purchase, Settings
 
-
 def get_or_create_month(db: Session, user_id: int, income: float, ratio: float) -> Month:
     today = datetime.utcnow().date()
     row = (
