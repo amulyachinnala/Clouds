@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Budget - Lemoney</title>
+    <link rel="icon" type="image/png" href="Graphics/lemonie%20happy.png">
+    <link rel="shortcut icon" href="Graphics/lemonie%20happy.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
     <link rel="stylesheet" href="style.css">
+<<<<<<< Updated upstream
     <!-- added minimal calendar styles -->
     <style>
         .calendar { max-width:520px; margin:20px auto; background:#fff; border-radius:8px; padding:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
@@ -18,13 +21,36 @@
         .day.today{background:#2d8cf0;color:#fff;font-weight:700}
         .day.inactive{opacity:0.35}
         .day-number{display:block;text-align:right;font-size:0.9rem}
+        .brand-avatar { max-width: 80px; height: auto; margin-right: 8px; }
+        .logo-container { display:flex; justify-content: flex-start; margin-bottom:20px; }
+        .logo-link { display:flex; align-items:center; justify-content:flex-start; }
+        .logo { max-width:150px; height:auto; cursor:pointer; }
+        .logo-link { display: flex; align-items: center; justify-content: flex-start; }
+=======
+    <style>
+        .modal-input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #d0d0d0;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+>>>>>>> Stashed changes
     </style>
 </head>
 <body>
     <div class="page-container">
-         <a href="home.html" class="logo-link">
-            <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney logo" class="logo">
-         </a>
+            <a href="home.html" class="logo-link" style="display:flex;align-items:center;gap:8px;">
+                <img src="Graphics/lemonie satisfied.png" alt="Lemonie" class="brand-avatar">
+                <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney logo" class="logo">
+            </a>
+
+        
+        <input class="modal-input" placeholder="Enter text">
+
+
 
         <nav class="nav-bar">
             <a href="home.html" class="nav-link">Home</a>

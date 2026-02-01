@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Tasks</title>
+    <link rel="icon" type="image/png" href="Graphics/lemonie%20happy.png">
+    <link rel="shortcut icon" href="Graphics/lemonie%20happy.png">
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
@@ -21,6 +23,10 @@
             height: auto;
             cursor: pointer;
         }
+        .brand-avatar { max-width: 80px; height: auto; margin-right: 8px; }
+        .logo-link { display: flex; align-items: center; justify-content: flex-start; }
+        .logo-container { display:flex; justify-content:flex-start; margin-bottom:20px; }
+        .logo { max-width:150px; height:auto; cursor:pointer; }
 
         /* --- PROGRESS BAR SECTION --- */
         .progress-section {
@@ -207,7 +213,8 @@
     <div class="page-container">
         
         <div class="logo-container">
-            <a href="home.html" title="Home">
+            <a href="home.html" title="Home" style="display:flex;align-items:center;gap:8px;">
+                <img src="Graphics/lemonie satisfied.png" alt="Lemonie" class="brand-avatar">
                 <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney logo" class="logo">
             </a>
         </div>
