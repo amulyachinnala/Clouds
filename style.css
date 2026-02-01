@@ -17,7 +17,7 @@ body {
     text-align: center;
 }
 
-/* CLOUD Header */
+/* LEMONEY Header */
 h1.main-title {
     font-size: 4rem;
     font-weight: 10;
@@ -31,11 +31,13 @@ h1.main-title {
 /* Navigation Bar */
 .nav-bar {
     display: flex;
-    justify-content: center;
-    gap: 40px; 
+    justify-content: space-between; 
+    width: 100%;
+    box-sizing: border-box;
     border-top: 1px solid #e5e5e5;
     border-bottom: 1px solid #e5e5e5; 
-    padding: 5px 0; 
+    padding: 15px 20%; 
+    
     margin-bottom: 30px;
 }
 

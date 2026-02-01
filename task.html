@@ -5,29 +5,74 @@
     <title>Tasks - Cloud</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 
     <style>
-        /* --- Task Specific Styles --- */
-        
-        .score-board {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #1a1a1a;
-        }
-        .score-board span {
-            color: #4CAF50;
-            transition: transform 0.2s; /* Animation for score pop */
-            display: inline-block;
-        }
-        /* Class to animate the score getting bigger briefly */
-        .score-pop {
-            transform: scale(1.5);
+        /* --- PROGRESS BAR SECTION --- */
+        .progress-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
+        /* 1. The Avatar Box */
+        .avatar-box {
+            width: 60px;   /* Slightly bigger for images */
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f4f8; /* Background circle color */
+            border-radius: 50%;
+            overflow: hidden; /* Clips square images to circles */
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        /* The Actual Image Tag */
+        .avatar-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures image fills the circle */
+        }
+        
+        /* 2. The Text (Now on the Right) */
+        .progress-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            min-width: 80px; 
+            text-align: left; /* Changed alignment */
+        }
+
+        /* 3. The Progress Bar Container */
+        .progress-track {
+            flex-grow: 1; 
+            height: 12px;
+            background-color: #e5e5e5;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #81C784);
+            width: 0%;
+            border-radius: 20px;
+            transition: width 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        /* --- TASK LIST STYLES --- */
         .task-input-area {
             display: flex;
             gap: 10px;
@@ -70,7 +115,6 @@
             text-align: left;
         }
 
-        /* Individual Task Item */
         .task-item {
             background: #f9fafb;
             border: 1px solid #e5e5e5;
@@ -80,30 +124,18 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            
-            /* Logic for the smooth fade out */
             transition: all 0.5s ease;
             opacity: 1;
-            transform: translateX(0);
         }
 
-        /* This class is added when checking the box */
         .task-item.fade-out {
             opacity: 0;
-            transform: translateX(50px); /* Slides to the right */
-            background-color: #e6f4ea; /* Turns slightly green before vanishing */
+            transform: translateX(50px);
+            background-color: #e6f4ea;
         }
 
-        .task-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .task-text {
-            font-size: 1.05rem;
-            font-weight: 500;
-        }
+        .task-left { display: flex; align-items: center; gap: 12px; }
+        .task-text { font-size: 1.05rem; font-weight: 500; }
 
         .badge {
             font-size: 0.75rem;
@@ -125,12 +157,7 @@
         }
         .delete-btn:hover { color: #d93025; }
 
-        input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: #4CAF50; /* Makes the checkbox green */
-        }
+        input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: #4CAF50; }
     </style>
 </head>
 <body>
@@ -144,8 +171,16 @@
             <a href="shop.html" class="nav-link">Shop</a>
         </nav>
 
-        <div class="score-board">
-            Total Points: <span id="totalScore">0</span>
+        <div class="progress-section">
+            <div id="avatarBox" class="avatar-box">
+                <img id="avatarImg" src="Graphics/lemonie front view.png" alt="Avatar">
+            </div>
+            
+            <div class="progress-track">
+                <div id="progressBar" class="progress-fill"></div>
+            </div>
+
+            <div id="progressText" class="progress-text">0/100</div>
         </div>
 
         <div class="task-input-area">
@@ -167,14 +202,53 @@
         const difficultySelect = document.getElementById('difficultySelect');
         const addTaskBtn = document.getElementById('addTaskBtn');
         const taskList = document.getElementById('taskList');
-        const totalScoreSpan = document.getElementById('totalScore');
-
-        // 1. LOAD POINTS FROM STORAGE (Connects to Shop)
-        // If there is no saved score, start at 0
-        let currentScore = parseInt(localStorage.getItem('cloudUserScore')) || 0;
         
-        // Display initial score
-        totalScoreSpan.textContent = currentScore;
+        // Progress UI Elements
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const avatarBox = document.getElementById('avatarBox');
+        const avatarImg = document.getElementById('avatarImg');
+
+        const myImages = [
+            'Graphics/lemonie front view.png', 
+            'Graphics/lemonie happy.png', 
+            'Graphics/lemonie satisfied.png',
+            'Graphics/lemonie talks.png',
+        ];
+        
+        let avatarIndex = 0;
+
+        // LOAD SCORE
+        let currentLifetimeScore = parseInt(localStorage.getItem('cloudUserScore')) || 0;
+        updateProgressUI();
+
+        function updateProgressUI() {
+            // Calculate Remainder (Modulo 100)
+            const currentLevelProgress = currentLifetimeScore % 100;
+            
+            // Update Text and Width
+            progressText.textContent = `${currentLevelProgress}/100`;
+            progressBar.style.width = `${currentLevelProgress}%`;
+        }
+
+        // Function to Cycle Avatar
+        function cycleAvatar() {
+            avatarIndex = (avatarIndex + 1) % myImages.length; // 0 -> 1 -> 2 -> 0
+            
+            // Animate flip
+            avatarBox.style.transform = "scale(0.8) rotate(10deg)";
+            
+            setTimeout(() => {
+                // Change the SOURCE of the image tag
+                avatarImg.src = myImages[avatarIndex];
+                
+                avatarBox.style.transform = "scale(1.1) rotate(0deg)";
+            }, 150);
+
+            setTimeout(() => {
+                avatarBox.style.transform = "scale(1)";
+            }, 300);
+        }
 
         function addTask() {
             const text = taskInput.value;
@@ -204,32 +278,22 @@
                 <button class="delete-btn"><i class="fa-solid fa-trash"></i></button>
             `;
 
-            // --- CHECKBOX LOGIC (Claim Reward) ---
+            // CHECKBOX LOGIC
             const checkbox = li.querySelector('.complete-checkbox');
             checkbox.addEventListener('change', function() {
                 if (this.checked) {
-                    // A. Add Points
-                    currentScore += points;
-                    totalScoreSpan.textContent = currentScore;
-                    
-                    // B. Save to LocalStorage immediately
-                    localStorage.setItem('cloudUserScore', currentScore);
+                    currentLifetimeScore += points;
+                    localStorage.setItem('cloudUserScore', currentLifetimeScore);
 
-                    // C. Animate the score number (make it pop)
-                    totalScoreSpan.classList.add('score-pop');
-                    setTimeout(() => totalScoreSpan.classList.remove('score-pop'), 200);
+                    updateProgressUI();
+                    cycleAvatar(); 
 
-                    // D. Animate the row fading out
                     li.classList.add('fade-out');
-
-                    // E. Remove from HTML after 0.5s
-                    setTimeout(() => {
-                        li.remove();
-                    }, 500); 
+                    setTimeout(() => { li.remove(); }, 500); 
                 }
             });
 
-            // --- DELETE BUTTON LOGIC (No Points) ---
+            // DELETE LOGIC
             const deleteBtn = li.querySelector('.delete-btn');
             deleteBtn.addEventListener('click', function() {
                 li.remove();
@@ -246,7 +310,6 @@
         });
 
     </script>
-    
     <script src="tour.js"></script>
 </body>
 </html>
