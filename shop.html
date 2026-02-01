@@ -2,264 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Shop - Cloud</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Shop - Lemoney</title>
     <link rel="icon" type="image/png" href="Graphics/lemonie%20happy.png">
     <link rel="shortcut icon" href="Graphics/lemonie%20happy.png">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-
     <style>
-        /* --- Shop Specific Styles --- */
-        
-        .score-board {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 40px;
-            color: #1a1a1a;
-            background: #f9fafb;
-            display: inline-block;
-            padding: 10px 20px;
-            border-radius: 12px;
-        }
-        .score-board span { color: #4CAF50; }
-
-        /* Tier Container */
-        .tier-section {
-            margin-bottom: 40px;
-            text-align: left;
-            position: relative;
-        }
-
-        /* The separating line */
-        .tier-separator {
-            border: 0;
-            height: 1px;
-            background: #e5e5e5;
-            margin: 40px 0;
-        }
-        .brand-avatar { max-width: 80px; height: auto; margin-right: 8px; }
-
-        /* ensure centered logo areas */
-        .logo-container { display: flex; justify-content: center; }
-        .logo-link { display: flex; align-items: center; justify-content: center; }
-
-        .tier-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid; /* Colored underline */
-        }
-        
-        .tier-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        /* Tier Colors */
-        .gold-theme { border-color: #FFD700; color: #bfa100; }
-        .silver-theme { border-color: #C0C0C0; color: #7f8c8d; }
-        .bronze-theme { border-color: #CD7F32; color: #a05a2c; }
-
-        /* Item Grid */
-        .items-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        /* Individual Prize Card */
-        .prize-card {
-            background: #fff;
-            border: 1px solid #e5e5e5;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            transition: transform 0.2s, box-shadow 0.2s;
-            position: relative;
-            cursor: pointer;
-        }
-
-        .prize-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            border-color: #1a1a1a;
-        }
-
-        .prize-name {
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .prize-cost {
-            font-size: 0.9rem;
-            color: #6e6e73;
-            background: #f2f4f7;
-            padding: 4px 10px;
-            border-radius: 20px;
-        }
-
-        /* Action Buttons (Edit/Delete) */
-        .card-actions {
-            margin-top: 15px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .action-btn {
-            background: none;
-            border: none;
-            font-size: 0.8rem;
-            cursor: pointer;
-            color: #9aa0a6;
-            padding: 5px;
-        }
-        .action-btn:hover { color: #1a1a1a; }
-        .action-btn.delete:hover { color: #d93025; }
-
-        /* Add Button */
-        .add-prize-btn {
-            background: #1a1a1a;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .add-prize-btn:hover { opacity: 0.9; }
-
-    </style>
-    <style>
-        /* Modal styles */
-        .modal-overlay.hidden { display: none; }
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0,0,0,0.35);
-            z-index: 9999;
-            padding: 20px;
-        }
-        .modal-box {
-            width: 100%;
-            max-width: 520px;
-            background: #f5f5f6; /* light grey */
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            text-align: left;
-        }
-        .modal-message {
-            color: #1a1a1a;
-            margin-bottom: 12px;
-            font-size: 1rem;
-        }
-        .modal-input {
-            width: 100%;
-            padding: 10px 12px;
-            border-radius: 8px;
-            border: 1px solid #d0d0d0;
-            margin-bottom: 12px;
-            box-sizing: border-box;
-            font-size: 1rem;
-        }
-        .modal-buttons { text-align: right; }
-        .modal-buttons .add-prize-btn { margin-left: 8px; }
-        .modal-buttons .cancel { background: #777; }
-        /* Top logo plate (rounded rectangular band behind logo) */
-        .logo-plate {
-            width: 100%;
-            display: flex;
-<<<<<<< Updated upstream
-            justify-content: flex-start;
-=======
-            justify-content: center;
->>>>>>> Stashed changes
-            padding: 18px 12px; /* spacing above/below the bar */
-            box-sizing: border-box;
-        }
-        .logo-plate-inner {
-            width: calc(100% - 40px);
-            max-width: 1200px;
-            background: #d9c0a3; /* soft brown */
-            border-radius: 18px;
-            display: flex;
-<<<<<<< Updated upstream
-            justify-content: flex-start;
-=======
-            justify-content: center;
->>>>>>> Stashed changes
-            align-items: center;
-            padding: 18px 20px;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-        }
-        .logo-plate .logo { max-height: 56px; height: auto; }
-<<<<<<< Updated upstream
-        .logo-container { display:flex; justify-content: flex-start; }
-        .logo-link { display:flex; align-items:center; justify-content:flex-start; }
-        .logo { max-width:150px; height:auto; cursor:pointer; }
-        .brand-avatar { max-width:80px; height:auto; margin-right:8px; }
-=======
->>>>>>> Stashed changes
+        .logo-container{display:flex;justify-content:flex-start;margin:16px 0}
+        .logo{max-width:150px;height:auto}
+        .brand-avatar{max-width:80px;height:auto;margin-right:8px}
+        .nav-bar{display:flex;gap:20px;margin-bottom:20px}
+        .score-board{display:inline-block;background:#f9fafb;padding:10px 16px;border-radius:10px}
+        .items-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px}
+        .prize-card{background:#fff;border:1px solid #e5e5e5;padding:16px;border-radius:12px}
     </style>
 </head>
 <body>
     <div class="page-container">
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
->>>>>>> 1c0899d15aad290d912aac0886d6e40c4337da0f
         <div class="logo-container">
-            <a href="home.html" title="Home">
-                <img src="Graphics/lemonie satisfied.png" alt="Lemonie" class="brand-avatar">
-                <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney logo" class="logo">
+            <a href="home.html" class="logo-link">
+                <img src="Graphics/lemonie satisfied.png" class="brand-avatar" alt="Lemonie">
+                <img src="Graphics/LEMONEY%20logo.png" class="logo" alt="Lemoney">
             </a>
-<<<<<<< HEAD
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-        <div class="logo-plate">
-            <div class="logo-plate-inner">
-                <a href="home.html" class="logo-link" title="Home">
-                    <img src="Graphics/lemonie satisfied.png" alt="Lemonie" class="brand-avatar">
-                    <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney logo" class="logo" style="cursor:pointer;" onclick="location.href='home.html'">
-                </a>
-            </div>
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> 1c0899d15aad290d912aac0886d6e40c4337da0f
-=======
->>>>>>> Stashed changes
-=======
-        <div class="logo-plate">
-            <div class="logo-plate-inner">
-                <a href="home.html" class="logo-link" title="Home">
-                    <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney logo" class="logo" style="cursor:pointer;" onclick="location.href='home.html'">
-                </a>
-            </div>
->>>>>>> Stashed changes
         </div>
-        
+
         <nav class="nav-bar">
             <a href="home.html" class="nav-link">Home</a>
             <a href="budget.html" class="nav-link">Budget</a>
@@ -267,211 +33,31 @@
             <a href="shop.html" class="nav-link active">Shop</a>
         </nav>
 
-        <div class="score-board">
-            Available Points: <span id="shopScore">0</span>
-        </div>
+        <div class="score-board">Available Points: <span id="shopScore">0</span></div>
 
-        <div class="tier-section">
-            <div class="tier-header gold-theme">
-                <span class="tier-title">Gold Tier</span>
-                <button class="add-prize-btn" onclick="addNewPrize('gold')">+ Add Gold Prize</button>
-            </div>
-            <div class="items-grid" id="gold-list">
-                </div>
-        </div>
+        <section class="tier-section">
+            <h3 class="tier-title">Gold Tier</h3>
+            <div id="gold-list" class="items-grid"></div>
+        </section>
 
-        <hr class="tier-separator">
+        <section class="tier-section">
+            <h3 class="tier-title">Silver Tier</h3>
+            <div id="silver-list" class="items-grid"></div>
+        </section>
 
-        <div class="tier-section">
-            <div class="tier-header silver-theme">
-                <span class="tier-title">Silver Tier</span>
-                <button class="add-prize-btn" onclick="addNewPrize('silver')">+ Add Silver Prize</button>
-            </div>
-            <div class="items-grid" id="silver-list"></div>
-        </div>
-
-        <hr class="tier-separator">
-
-        <div class="tier-section">
-            <div class="tier-header bronze-theme">
-                <span class="tier-title">Bronze Tier</span>
-                <button class="add-prize-btn" onclick="addNewPrize('bronze')">+ Add Bronze Prize</button>
-            </div>
-            <div class="items-grid" id="bronze-list"></div>
-        </div>
-
+        <section class="tier-section">
+            <h3 class="tier-title">Bronze Tier</h3>
+            <div id="bronze-list" class="items-grid"></div>
+        </section>
     </div>
 
     <script>
-        /* --- SHOP LOGIC (with custom modal dialogs) --- */
-        const shopScoreSpan = document.getElementById('shopScore');
-        
-        // 1. LOAD POINTS from LocalStorage
-        // We use 'cloudUserScore' as the key to save data between pages
         let currentScore = parseInt(localStorage.getItem('cloudUserScore')) || 0;
-        shopScoreSpan.textContent = currentScore;
-
-        function updateScoreDisplay() {
-            shopScoreSpan.textContent = currentScore;
-            localStorage.setItem('cloudUserScore', currentScore);
-        }
-
-        /* Modal elements (injected into DOM) */
-        (function createModalElements(){
-            const overlay = document.createElement('div');
-            overlay.id = 'modal-overlay';
-            overlay.className = 'modal-overlay hidden';
-            overlay.innerHTML = `
-                <div class="modal-box" role="dialog" aria-modal="true">
-                    <div id="modalMessage" class="modal-message"></div>
-                    <input id="modalInput" class="modal-input" />
-                    <div class="modal-buttons">
-                        <button id="modalOk" class="add-prize-btn">OK</button>
-                        <button id="modalCancel" class="add-prize-btn cancel">Cancel</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(overlay);
-        })();
-
-        function showModal(mode, message, defaultValue) {
-            return new Promise((resolve) => {
-                const overlay = document.getElementById('modal-overlay');
-                const msgEl = document.getElementById('modalMessage');
-                const inputEl = document.getElementById('modalInput');
-                const okBtn = document.getElementById('modalOk');
-                const cancelBtn = document.getElementById('modalCancel');
-
-                msgEl.textContent = message || '';
-
-                inputEl.style.display = (mode === 'prompt') ? 'block' : 'none';
-                if(mode === 'prompt') {
-                    inputEl.value = defaultValue || '';
-                    setTimeout(()=> inputEl.focus(), 10);
-                } else {
-                    setTimeout(()=> okBtn.focus(), 10);
-                }
-
-                overlay.classList.remove('hidden');
-
-                function cleanup() {
-                    okBtn.removeEventListener('click', onOk);
-                    cancelBtn.removeEventListener('click', onCancel);
-                    inputEl.removeEventListener('keydown', onKey);
-                    overlay.classList.add('hidden');
-                }
-
-                function onOk() {
-                    if(mode === 'prompt') {
-                        cleanup();
-                        resolve(inputEl.value);
-                    } else if(mode === 'confirm') {
-                        cleanup();
-                        resolve(true);
-                    } else { // alert
-                        cleanup();
-                        resolve(true);
-                    }
-                }
-
-                function onCancel() {
-                    cleanup();
-                    if(mode === 'prompt') resolve(null);
-                    else resolve(false);
-                }
-
-                function onKey(e) {
-                    if(e.key === 'Enter') onOk();
-                    if(e.key === 'Escape') onCancel();
-                }
-
-                okBtn.addEventListener('click', onOk);
-                cancelBtn.addEventListener('click', onCancel);
-                inputEl.addEventListener('keydown', onKey);
-            });
-        }
-
-        function customPrompt(message, defaultValue) { return showModal('prompt', message, defaultValue); }
-        function customConfirm(message) { return showModal('confirm', message); }
-        function customAlert(message) { return showModal('alert', message); }
-
-        // 2. ADD PRIZE FUNCTION (uses customPrompt)
-        async function addNewPrize(tier) {
-            const name = await customPrompt("Enter prize name (e.g., 'Airpods'):", '');
-            if (name === null || name.trim() === '') return;
-
-            const costInput = await customPrompt('Enter cost in points:', '');
-            if (costInput === null) return;
-
-            const cost = parseInt(costInput.trim(), 10);
-            if (Number.isNaN(cost)) {
-                await customAlert('Please enter a valid number for points.');
-                return;
-            }
-
-            createPrizeCard(tier, name.trim(), cost);
-        }
-
-        // 3. CREATE CARD HTML
-        function createPrizeCard(tier, name, cost) {
-            const listId = tier + '-list';
-            const container = document.getElementById(listId);
-
-            const card = document.createElement('div');
-            card.className = 'prize-card';
-            card.onclick = (e) => purchaseItem(e, name, cost, card);
-
-            card.innerHTML = `
-                <span class="prize-name">${name}</span>
-                <span class="prize-cost">${cost} pts</span>
-                <div class="card-actions">
-                    <button class="action-btn" onclick="editPrize(event, this)">Edit</button>
-                    <button class="action-btn delete" onclick="deletePrize(event, this)">Delete</button>
-                </div>
-            `;
-
-            container.appendChild(card);
-        }
-
-        // 4. PURCHASE LOGIC (uses customConfirm/customAlert)
-        async function purchaseItem(event, name, cost, cardElement) {
-            if(event.target.tagName === 'BUTTON') return;
-
-            if (currentScore >= cost) {
-                const confirmBuy = await customConfirm(`Buy \"${name}\" for ${cost} points?`);
-                if (confirmBuy) {
-                    currentScore -= cost;
-                    updateScoreDisplay();
-                    await customAlert(`Enjoy your ${name}!`);
-                }
-            } else {
-                await customAlert(`You need ${cost - currentScore} more points to buy this!`);
-            }
-        }
-
-        // 5. EDIT & DELETE (use customPrompt/customConfirm)
-        async function deletePrize(event, btn) {
-            event.stopPropagation();
-            const confirmed = await customConfirm('Remove this item from the shop?');
-            if (confirmed) btn.closest('.prize-card').remove();
-        }
-
-        async function editPrize(event, btn) {
-            event.stopPropagation();
-            const card = btn.closest('.prize-card');
-            const nameEl = card.querySelector('.prize-name');
-            const costEl = card.querySelector('.prize-cost');
-
-            const newName = await customPrompt('Edit Name:', nameEl.innerText);
-            if(newName !== null && newName.trim() !== '') nameEl.innerText = newName.trim();
-
-            const currentCostValue = parseInt(costEl.innerText, 10) || 0;
-            const newCost = await customPrompt('Edit Cost:', String(currentCostValue));
-            if(newCost !== null && !isNaN(parseInt(newCost, 10))) {
-                costEl.innerText = parseInt(newCost, 10) + ' pts';
-            }
-        }
+        document.getElementById('shopScore').textContent = currentScore;
+        function updateScoreDisplay(){ document.getElementById('shopScore').textContent = currentScore; localStorage.setItem('cloudUserScore', currentScore); }
+        function createPrizeCard(tier,name,cost){ const container=document.getElementById(tier+'-list'); const card=document.createElement('div'); card.className='prize-card'; card.innerHTML=`<strong class="prize-name">${name}</strong><div class="prize-cost">${cost} pts</div>`; container.appendChild(card); }
     </script>
+
     <script src="tour.js"></script>
 </body>
 </html>
