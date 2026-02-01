@@ -206,15 +206,23 @@
             font-size: 0.75rem;
             color: #6e6e73;
         }
+
+        /* Loading overlay styles moved to global stylesheet */
     </style>
 </head>
-<body>
+<body class="home-page">
+
+    <div id="loadingOverlay" aria-hidden="true">
+        <img id="loadingGif" src="Graphics/loading.gif" alt="Loading">
+    </div>
 
     <div class="page-container">
         
         <header class="brand-logo-container">
             <img src="Graphics/lemonie satisfied.png" alt="Lemonie" class="brand-avatar-img">
-            <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney" class="brand-text-img">
+            <span class="brand-text-wrap">
+                <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney" class="brand-text-img">
+            </span>
         </header>
 
         <nav class="nav-bar">
@@ -225,7 +233,7 @@
         </nav>
 
         <div style="text-align: center; margin-bottom: 30px;">
-            <h2 style="margin: 0; font-size: 1.5rem;">Welcome Back!</h2>
+            <img src="Graphics/welcomeback.png" alt="Welcome Back" style="margin: 0; max-width: 100%; height: auto;">
             <p style="color: #6e6e73; margin-top: 8px;">Here is your activity for Februrary.</p>
         </div>
 
@@ -245,7 +253,8 @@
                     <span class="stat-label">Completion Rate</span>
                 </div>
             </div>
-            
+
+            <div class="charts-row">
             <div class="charts-row">
                 
                 <div class="calendar-card">
@@ -336,6 +345,49 @@
             `;
             chartContainer.appendChild(col);
         });
+    </script>
+    <script>
+        (function(){
+            const STORAGE_KEY = 'lemoney_loading_shown';
+            const overlay = document.getElementById('loadingOverlay');
+            const fadeDuration = 2000; // ms
+            const displayDuration = 3000; // ms before starting fade
+
+            function hideOverlay(){
+                if(!overlay) return;
+                overlay.classList.add('hidden');
+                setTimeout(()=>{ if(overlay) overlay.style.display = 'none'; }, fadeDuration);
+                document.body.classList.remove('no-scroll');
+            }
+
+            function showThenHide(duration, setFlag = true){
+                if(!overlay) return;
+                overlay.style.display = 'flex';
+                overlay.classList.remove('hidden');
+                void overlay.offsetWidth; // reflow
+                document.body.classList.add('no-scroll');
+                setTimeout(()=>{
+                    hideOverlay();
+                    try{ if(setFlag) sessionStorage.setItem(STORAGE_KEY, '1'); }catch(e){}
+                }, duration);
+            }
+
+            try{
+                if(!sessionStorage.getItem(STORAGE_KEY)){
+                    setTimeout(()=> showThenHide(displayDuration), 100);
+                } else {
+                    if(overlay) overlay.style.display = 'none';
+                }
+            }catch(e){ if(overlay) overlay.style.display = 'none'; }
+
+            const logo = document.querySelector('.brand-text-img');
+            if(logo){
+                logo.addEventListener('click', (e)=>{
+                    e.preventDefault();
+                    try{ if(!sessionStorage.getItem(STORAGE_KEY)) showThenHide(1000, false); else showThenHide(1000, false); }catch(err){ showThenHide(1000, false); }
+                });
+            }
+        })();
     </script>
     <script src="tour.js"></script>
 </body>
