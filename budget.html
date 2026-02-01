@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Budget - Lemoney</title>
 
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
@@ -19,12 +18,27 @@
             margin: 0 auto;
         }
 
-        .logo {
-            width: 160px;
-            margin: 30px auto 10px;
-            display: block;
+        /* LOGO STYLES */
+        .brand-logo-container {
+            display: flex;           
+            justify-content: center; 
+            align-items: center;     
+            gap: 12px;               
+            margin-top: 30px;        
+            margin-bottom: 20px;     
         }
 
+        .brand-avatar-img {
+            height: 75px;  
+            width: auto;
+        }
+
+        .brand-text-img {
+            height: 50px;  
+            width: auto;
+        }
+
+        /* --- NAVIGATION --- */
         .nav-bar {
             display: flex;
             justify-content: center;
@@ -103,7 +117,10 @@
 <body>
 <div class="page-container">
 
-    <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney logo" class="logo">
+    <header class="brand-logo-container">
+        <img src="Graphics/lemonie satisfied.png" alt="Lemonie" class="brand-avatar-img">
+        <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney" class="brand-text-img">
+    </header>
 
     <nav class="nav-bar">
         <a href="home.html" class="nav-link">Home</a>
@@ -119,7 +136,6 @@
 
     <div class="charts-row">
 
-        <!-- LEFT PIE -->
         <div class="chart-column">
             <h3>Spending Money ($400)</h3>
 
@@ -134,7 +150,6 @@
             </div>
         </div>
 
-        <!-- RIGHT PIE -->
         <div class="chart-column">
             <h3>Monthly Budget</h3>
             <div class="pie-chart-container">
