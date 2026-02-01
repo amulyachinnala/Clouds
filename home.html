@@ -22,7 +22,7 @@
             max-width: 1000px;
         }
 
-        /* LOGO */
+        /* --- UNIFIED HEADER --- */
         .brand-logo-container {
             display: flex;
             justify-content: center;
@@ -106,6 +106,9 @@
             flex: 1;
             min-width: 300px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            overflow: hidden; /* This keeps the chart inside the rounded borders */
+            display: flex;    /* Helps align internal content */
+            flex-direction: column;
         }
 
         /* Calendar Styles */
@@ -154,28 +157,31 @@
         .day-miss .status-icon { color: #ea4335; } 
         .current-day { border: 2px solid #1a1a1a; font-weight: 700; }
 
-        /* --- CHART STYLES (FIXED) --- */
+        /*  CHART STYLES */
         .chart-container {
             display: flex;
-            justify-content: space-between; /* Spreads bars evenly */
+            justify-content: space-around; 
+            align-items: flex-end;
             height: 200px;
-            padding-bottom: 5px;
+            padding: 0 10px 5px 10px; 
             border-bottom: 1px solid #e5e5e5;
+            width: 100%;               
+            box-sizing: border-box;    
         }
 
         .chart-column {
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* FIX: Fixed width prevents giant bars */
-            width: 40px; 
+            flex: 1;          
             height: 100%;
             justify-content: flex-end;
+            min-width: 0;     
         }
 
         .chart-bar {
-            width: 100%;
-            background: #4CAF50; /* Green */
+            width: 25px;    
+            background: #4CAF50;
             border-radius: 4px 4px 0 0;
             transition: height 0.5s ease;
             position: relative;
@@ -220,7 +226,7 @@
 
         <div style="text-align: center; margin-bottom: 30px;">
             <h2 style="margin: 0; font-size: 1.5rem;">Welcome Back!</h2>
-            <p style="color: #6e6e73; margin-top: 8px;">Here is your activity for February.</p>
+            <p style="color: #6e6e73; margin-top: 8px;">Here is your activity for Februrary.</p>
         </div>
 
         <div class="dashboard-content">
