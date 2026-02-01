@@ -6,28 +6,25 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
     <link rel="stylesheet" href="style.css">
+    <!-- added minimal calendar styles -->
     <style>
-        .modal-input {
-            width: 100%;
-            padding: 10px 12px;
-            border-radius: 8px;
-            border: 1px solid #d0d0d0;
-            margin-bottom: 12px;
-            box-sizing: border-box;
-            font-size: 1rem;
-        }
+        .calendar { max-width:520px; margin:20px auto; background:#fff; border-radius:8px; padding:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+        .calendar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+        .calendar-header button{background:#2d8cf0;color:#fff;border:none;padding:6px 10px;border-radius:4px;cursor:pointer}
+        .calendar-header #monthYear{font-weight:600}
+        .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+        .day-name{text-align:center;font-size:0.85rem;color:#666;padding:6px 0}
+        .day{min-height:60px;padding:6px;border-radius:6px;cursor:default;background:#f7f7f7}
+        .day.today{background:#2d8cf0;color:#fff;font-weight:700}
+        .day.inactive{opacity:0.35}
+        .day-number{display:block;text-align:right;font-size:0.9rem}
     </style>
 </head>
 <body>
     <div class="page-container">
          <a href="home.html" class="logo-link">
-    <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney logo" class="logo">
-        </a>
-
-        
-        <input class="modal-input" placeholder="Enter text">
-
-
+            <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney logo" class="logo">
+         </a>
 
         <nav class="nav-bar">
             <a href="home.html" class="nav-link">Home</a>
@@ -35,28 +32,98 @@
             <a href="task.html" class="nav-link">Task</a>
             <a href="shop.html" class="nav-link">Shop</a>
         </nav>
+
         <h2>Budget Tracker</h2>
-        <p>Track your finances here.</p>
-    </div>
-    <div class="result">
-                <div class="pie-chart-container">
-                    <canvas id="pie-chart" width="600" height="600"></canvas>
-                    <ul id="pie-chart-legend"></ul>
-                </div>
+        <!-- replaced placeholder text with calendar -->
+        <div class="calendar" id="calendar">
+            <div class="calendar-header">
+                <button id="prev" aria-label="Previous month">&lt;</button>
+                <div id="monthYear"></div>
+                <button id="next" aria-label="Next month">&gt;</button>
+            </div>
+            <div class="calendar-grid" id="calendarGrid">
+                <!-- day names and days rendered by JS -->
             </div>
         </div>
     </div>
-    
-    <script src="main.js"></script>
-    <script src="tour.js"></script>
+
+    <!-- inline calendar script (replaces tour.js) -->
+    <script>
+        (function(){
+            const monthYearEl = document.getElementById('monthYear');
+            const gridEl = document.getElementById('calendarGrid');
+            const prevBtn = document.getElementById('prev');
+            const nextBtn = document.getElementById('next');
+
+            const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+            let today = new Date();
+            let currentMonth = today.getMonth();
+            let currentYear = today.getFullYear();
+
+            function render() {
+                gridEl.innerHTML = '';
+                monthYearEl.textContent = new Date(currentYear, currentMonth).toLocaleString(undefined, { month: 'long', year: 'numeric' });
+
+                // day names
+                for (let d of dayNames) {
+                    const dn = document.createElement('div');
+                    dn.className = 'day-name';
+                    dn.textContent = d;
+                    gridEl.appendChild(dn);
+                }
+
+                const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+                const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+                // previous month's tail
+                const prevMonthDays = new Date(currentYear, currentMonth, 0).getDate();
+                for (let i = 0; i < firstDay; i++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'day inactive';
+                    const num = prevMonthDays - firstDay + 1 + i;
+                    cell.innerHTML = '<span class="day-number">'+num+'</span>';
+                    gridEl.appendChild(cell);
+                }
+
+                // current month days
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'day';
+                    const date = new Date(currentYear, currentMonth, d);
+                    if (date.toDateString() === today.toDateString()) {
+                        cell.classList.add('today');
+                    }
+                    cell.innerHTML = '<span class="day-number">'+d+'</span>';
+                    // optional: click handler to add/view notes
+                    cell.addEventListener('click', ()=>{ /* placeholder for future interactions */ });
+                    gridEl.appendChild(cell);
+                }
+
+                // next month's head to fill remaining cells (ensure 7*6 grid roughly)
+                const totalCells = firstDay + daysInMonth;
+                const nextFill = (7 - (totalCells % 7)) % 7;
+                for (let i = 1; i <= nextFill; i++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'day inactive';
+                    cell.innerHTML = '<span class="day-number">'+i+'</span>';
+                    gridEl.appendChild(cell);
+                }
+            }
+
+            prevBtn.addEventListener('click', ()=> {
+                currentMonth--;
+                if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+                render();
+            });
+            nextBtn.addEventListener('click', ()=> {
+                currentMonth++;
+                if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+                render();
+            });
+
+            render();
+        })();
+    </script>
 </body>
 </html>
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-
-
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
