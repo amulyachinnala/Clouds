@@ -7,10 +7,6 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Optional driver.js (kept from your original) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
-
     <style>
         body {
             margin: 0;
@@ -57,7 +53,7 @@
         .charts-row {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-top: 60px;
             gap: 40px;
         }
@@ -80,85 +76,170 @@
         }
 
         h3 {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+        }
+
+        /* ---------- INPUT UI ---------- */
+
+        .item-inputs {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .item-inputs input {
+            padding: 8px;
+            width: 120px;
+        }
+
+        .item-inputs button {
+            padding: 8px 12px;
+            cursor: pointer;
         }
     </style>
 </head>
 
 <body>
-    <div class="page-container">
+<div class="page-container">
 
-        <a href="home.html" class="logo-link">
-            <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney logo" class="logo">
-        </a>
+    <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney logo" class="logo">
 
-        <nav class="nav-bar">
-            <a href="home.html" class="nav-link">Home</a>
-            <a href="budget.html" class="nav-link active">Budget</a>
-            <a href="task.html" class="nav-link">Task</a>
-            <a href="shop.html" class="nav-link">Shop</a>
-        </nav>
+    <nav class="nav-bar">
+        <a href="home.html" class="nav-link">Home</a>
+        <a href="budget.html" class="nav-link active">Budget</a>
+        <a href="task.html" class="nav-link">Task</a>
+        <a href="shop.html" class="nav-link">Shop</a>
+    </nav>
 
-        <div class="budget-text">
-            <h2>Budget Tracker</h2>
-            <p>Track your finances here.</p>
-        </div>
-
-        <!-- ---------- PIE CHARTS ---------- -->
-
-        <div class="charts-row">
-
-            <!-- LEFT PIE -->
-            <div class="chart-column">
-                <h3>Spending Allowance</h3>
-                <div class="pie-chart-container">
-                    <canvas id="allowance-chart"></canvas>
-                </div>
-            </div>
-
-            <!-- RIGHT PIE -->
-            <div class="chart-column">
-                <h3>Monthly Budget</h3>
-                <div class="pie-chart-container">
-                    <canvas id="monthly-budget-chart"></canvas>
-                </div>
-            </div>
-
-        </div>
+    <div class="budget-text">
+        <h2>Budget Tracker</h2>
+        <p>Track your finances here.</p>
     </div>
 
-    <script>
-        // LEFT: Spending Allowance
-        new Chart(document.getElementById('allowance-chart'), {
-            type: 'pie',
-            data: {
-                labels: ['Remaining', 'Spent'],
-                datasets: [{
-                    data: [70, 30], // change later
-                    backgroundColor: ['#6FB98F', '#DADADA']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
+    <div class="charts-row">
 
-        // RIGHT: Monthly Budget (3 slices)
-        new Chart(document.getElementById('monthly-budget-chart'), {
+        <!-- LEFT PIE -->
+        <div class="chart-column">
+            <h3>Spending Money ($400)</h3>
+
+            <div class="pie-chart-container">
+                <canvas id="spending-chart"></canvas>
+            </div>
+
+            <div class="item-inputs">
+                <input type="text" id="item-name" placeholder="Item name">
+                <input type="number" id="item-price" placeholder="$ price">
+                <button onclick="addItem()">Add</button>
+            </div>
+        </div>
+
+        <!-- RIGHT PIE -->
+        <div class="chart-column">
+            <h3>Monthly Budget</h3>
+            <div class="pie-chart-container">
+                <canvas id="monthly-budget-chart"></canvas>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const SPENDING_TOTAL = 400;
+
+    let spendingLabels = ['Remaining'];
+    let spendingValues = [100]; // percentage
+    let spendingColors = ['#6FB98F'];
+
+    const spendingChart = new Chart(
+        document.getElementById('spending-chart'),
+        {
             type: 'pie',
             data: {
-                labels: ['Needs', 'Wants', 'Savings'],
+                labels: spendingLabels,
                 datasets: [{
-                    data: [50, 30, 20], // change later
-                    backgroundColor: ['#27AE60', '#F2C94C', '#EB5757']
+                    data: spendingValues,
+                    backgroundColor: spendingColors
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                const percent = ctx.raw;
+                                const amount = (percent / 100) * SPENDING_TOTAL;
+                                return `${ctx.label}: $${amount.toFixed(2)} (${percent.toFixed(1)}%)`;
+                            }
+                        }
+                    }
+                }
             }
-        });
-    </script>
+        }
+    );
+
+    function addItem() {
+        const name = document.getElementById('item-name').value;
+        const price = parseFloat(document.getElementById('item-price').value);
+
+        if (!name || isNaN(price) || price <= 0) return;
+
+        const percent = (price / SPENDING_TOTAL) * 100;
+
+        // Calculate remaining %
+        const remainingIndex = spendingLabels.indexOf('Remaining');
+        spendingValues[remainingIndex] -= percent;
+
+        if (spendingValues[remainingIndex] < 0) {
+            alert('Not enough spending money!');
+            spendingValues[remainingIndex] += percent;
+            return;
+        }
+
+        // Add item slice
+        spendingLabels.push(name);
+        spendingValues.push(percent);
+        spendingColors.push(`#${Math.floor(Math.random()*16777215).toString(16)}`);
+
+        spendingChart.update();
+
+        document.getElementById('item-name').value = '';
+        document.getElementById('item-price').value = '';
+    }
+
+    // RIGHT: Monthly Budget (locked)
+    new Chart(document.getElementById('monthly-budget-chart'), {
+        type: 'pie',
+        data: {
+            labels: ['Spending (20%)', 'Expenses (50%)', 'Savings (30%)'],
+            datasets: [{
+                data: [20, 50, 30],
+                backgroundColor: ['#FFF8BF', '#FFF44F', '#FFFB99']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: {
+                    callbacks: {
+                        label: function(ctx) {
+                            const amount = (ctx.raw / 100) * 2000;
+                            return `${ctx.label}: $${amount.toFixed(2)}`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
 </body>
 </html>
