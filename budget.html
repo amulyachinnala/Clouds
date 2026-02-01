@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Budget - Lemoney</title>
+<<<<<<< HEAD
     <link rel="icon" type="image/png" href="Graphics/lemonie%20happy.png">
     <link rel="shortcut icon" href="Graphics/lemonie%20happy.png">
     <link rel="stylesheet" href="style.css">
+=======
+
+    <!-- Chart.js -->
+>>>>>>> 174547af23515b4250b461054fc9425a6ad0047f
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         .logo-container{display:flex;justify-content:flex-start;margin:16px 0}
@@ -17,6 +22,7 @@
         .pie-chart-container{width:100%;max-width:520px;margin:0 auto}
     </style>
 </head>
+<<<<<<< HEAD
 <body>
     <div class="page-container">
         <div class="logo-container">
@@ -50,6 +56,51 @@
                 </div>
             </div>
         </section>
+=======
+
+<body>
+<div class="page-container">
+
+    <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney logo" class="logo">
+
+    <nav class="nav-bar">
+        <a href="home.html" class="nav-link">Home</a>
+        <a href="budget.html" class="nav-link active">Budget</a>
+        <a href="task.html" class="nav-link">Task</a>
+        <a href="shop.html" class="nav-link">Shop</a>
+    </nav>
+
+    <div class="budget-text">
+        <h2>Budget Tracker</h2>
+        <p>Track your finances here.</p>
+    </div>
+
+    <div class="charts-row">
+
+        <!-- LEFT PIE -->
+        <div class="chart-column">
+            <h3>Spending Money ($400)</h3>
+
+            <div class="pie-chart-container">
+                <canvas id="spending-chart"></canvas>
+            </div>
+
+            <div class="item-inputs">
+                <input type="text" id="item-name" placeholder="Item name">
+                <input type="number" id="item-price" placeholder="$ price">
+                <button onclick="addItem()">Add</button>
+            </div>
+        </div>
+
+        <!-- RIGHT PIE -->
+        <div class="chart-column">
+            <h3>Monthly Budget</h3>
+            <div class="pie-chart-container">
+                <canvas id="monthly-budget-chart"></canvas>
+            </div>
+        </div>
+
+>>>>>>> 174547af23515b4250b461054fc9425a6ad0047f
     </div>
 
     <script src="main.js"></script>
