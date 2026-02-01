@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shop - Cloud</title>
+
+    <!-- Driver.js -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="backdrop.css">
+
+    <!-- Shop Styles -->
+    <style>
+        .score-board {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #1a1a1a;
+            background: #f9fafb;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 12px;
+        }
+
+        .score-board span {
+            color: #4CAF50;
+        }
+
+        .psp-summary {
+            font-size: 0.95rem;
+            color: #6e6e73;
+            margin-bottom: 20px;
+        }
+
+        .shop-message {
+            margin: 10px 0 20px;
+            color: #b71c1c;
+            min-height: 20px;
+        }
+
+        .start-notice {
+            text-align: center;
+            background: #fff7e6;
+            border: 1px solid #ffd8a8;
+            color: #6e6e73;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin: 12px auto 24px;
+            max-width: 520px;
+        }
+
+        .start-notice a {
+            color: #1a1a1a;
+            font-weight: 600;
+            text-decoration: none;
+            margin-left: 6px;
+        }
+
+        .tier-section {
+            margin-bottom: 40px;
+        }
+
+        .tier-separator {
+            border: 0;
+            height: 1px;
+            background: #e5e5e5;
+            margin: 40px 0;
+        }
+
+        .tier-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid;
+        }
+
+        .tier-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .gold-theme { border-color: #FFD700; color: #bfa100; }
+        .silver-theme { border-color: #C0C0C0; color: #7f8c8d; }
+        .bronze-theme { border-color: #CD7F32; color: #a05a2c; }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .prize-card {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .prize-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .prize-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .prize-cost {
+            font-size: 0.9rem;
+            color: #6e6e73;
+            background: #f2f4f7;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .card-actions {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .action-btn {
+            border: none;
+            border-radius: 8px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .buy-btn { background: #1a1a1a; color: #fff; }
+
+        .add-prize-btn {
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body class="has-backdrop">
+<div class="page-container">
+
+    <a href="home.html">
+        <img src="Graphics/LEMONEY%20logo.png" class="logo" alt="Lemoney logo">
+    </a>
+
+    <nav class="nav-bar">
+        <a href="home.html" class="nav-link">Home</a>
+        <a href="budget.html" class="nav-link">Budget</a>
+        <a href="task.html" class="nav-link">Task</a>
+        <a href="shop.html" class="nav-link active">Shop</a>
+    </nav>
+
+    <div class="score-board">
+        Available EXP: <span id="shopScore">0</span>
+    </div>
+    <div id="pspRemaining" class="psp-summary">PSP Remaining: $0.00</div>
+    <div id="shopMessage" class="shop-message"></div>
+    <div id="shopGate" class="start-notice hidden">
+        Start month first to unlock rewards.
+        <a href="budget.html">Enter Budget</a>
+    </div>
+
+    <div class="tier-section">
+        <div class="tier-header gold-theme">
+            <span class="tier-title">Gold Tier</span>
+            <button class="add-prize-btn" onclick="addNewPrize('gold')">+ Add Prize</button>
+        </div>
+        <div class="items-grid" id="gold-list"></div>
+    </div>
+
+    <hr class="tier-separator">
+
+    <div class="tier-section">
+        <div class="tier-header silver-theme">
+            <span class="tier-title">Silver Tier</span>
+            <button class="add-prize-btn" onclick="addNewPrize('silver')">+ Add Prize</button>
+        </div>
+        <div class="items-grid" id="silver-list"></div>
+    </div>
+
+    <hr class="tier-separator">
+
+    <div class="tier-section">
+        <div class="tier-header bronze-theme">
+            <span class="tier-title">Bronze Tier</span>
+            <button class="add-prize-btn" onclick="addNewPrize('bronze')">+ Add Prize</button>
+        </div>
+        <div class="items-grid" id="bronze-list"></div>
+    </div>
+
+</div>
+
+<script src="js/api.js"></script>
+<script src="chat.js"></script>
+<script>
+    const shopScoreSpan = document.getElementById('shopScore');
+    const shopMessage = document.getElementById('shopMessage');
+    const shopGate = document.getElementById('shopGate');
+    const pspRemainingEl = document.getElementById('pspRemaining');
+
+    function showMessage(message) {
+        shopMessage.textContent = message || '';
+    }
+
+    function updateScore(value) {
+        shopScoreSpan.textContent = Math.round(Number(value || 0));
+    }
+
+    function formatCurrency(value) {
+        const num = Number(value || 0);
+        return '$' + num.toFixed(2);
+    }
+
+    function updatePspRemaining(charts) {
+        if (!charts || !charts.psp_pie || !charts.psp_pie.slices) {
+            pspRemainingEl.textContent = 'PSP Remaining: $0.00';
+            return;
+        }
+        const remainingSlice = charts.psp_pie.slices.find(slice => String(slice.label || '').toLowerCase().includes('remaining'));
+        const remainingValue = remainingSlice ? Number(remainingSlice.value || 0) : 0;
+        pspRemainingEl.textContent = 'PSP Remaining: ' + formatCurrency(remainingValue);
+    }
+
+    function clearLists() {
+        document.getElementById('gold-list').innerHTML = '';
+        document.getElementById('silver-list').innerHTML = '';
+        document.getElementById('bronze-list').innerHTML = '';
+    }
+
+    function determineTier(item) {
+        const category = (item.category || '').toLowerCase();
+        if (category.includes('gold')) return 'gold';
+        if (category.includes('silver')) return 'silver';
+        if (category.includes('bronze')) return 'bronze';
+        const tierValue = Number(item.tier || 0);
+        if (tierValue >= 3) return 'gold';
+        if (tierValue === 2) return 'silver';
+        return 'bronze';
+    }
+
+    function createCard(item) {
+        const card = document.createElement('div');
+        card.className = 'prize-card';
+        card.innerHTML = `
+            <span class="prize-name">${item.name}</span>
+            <span class="prize-cost">${item.exp_cost} EXP</span>
+            <div class="card-actions">
+                <button class="action-btn buy-btn">Purchase</button>
+            </div>
+        `;
+        const buyBtn = card.querySelector('.buy-btn');
+        buyBtn.addEventListener('click', async function () {
+            buyBtn.disabled = true;
+            showMessage('');
+            try {
+                const result = await API.purchaseItem(item.id);
+                if (result && result.month_state) {
+                    updateScore(result.month_state.exp_available);
+                }
+                const charts = await API.charts();
+                updatePspRemaining(charts);
+                try {
+                    localStorage.setItem('psp_dirty', Date.now().toString());
+                } catch (err) {
+                    // ignore
+                }
+                showMessage('Purchase completed.');
+            } catch (err) {
+                const msg = err && err.message ? err.message : 'Unable to purchase item.';
+                if (msg.toLowerCase().includes('not enough exp')) {
+                    showMessage('Not enough EXP available.');
+                } else {
+                    showMessage(msg);
+                }
+            } finally {
+                buyBtn.disabled = false;
+            }
+        });
+        return card;
+    }
+
+    function renderItems(items) {
+        clearLists();
+        if (!items || !items.length) {
+            const empty = document.createElement('div');
+            empty.className = 'prize-card';
+            empty.textContent = 'No prizes yet.';
+            document.getElementById('gold-list').appendChild(empty);
+            return;
+        }
+        items.forEach(item => {
+            const tier = determineTier(item);
+            const list = document.getElementById(tier + '-list');
+            list.appendChild(createCard(item));
+        });
+    }
+
+    async function loadShop() {
+        if (!window.API || !API.getToken || !API.getToken()) {
+            window.location.href = 'login.html';
+            return;
+        }
+
+        showMessage('');
+
+        try {
+            const state = await API.monthState();
+            updateScore(state.exp_available);
+            shopGate.classList.add('hidden');
+        } catch (err) {
+            if (err && err.status === 400) {
+                shopGate.classList.remove('hidden');
+                clearLists();
+                setTimeout(() => {
+                    window.location.href = 'budget.html';
+                }, 1500);
+                return;
+            }
+            showMessage(err && err.message ? err.message : 'Unable to load month state.');
+            return;
+        }
+
+        try {
+            const charts = await API.charts();
+            updatePspRemaining(charts);
+        } catch (err) {
+            updatePspRemaining(null);
+        }
+
+        try {
+            const items = await API.listShopItems();
+            renderItems(items);
+        } catch (err) {
+            showMessage(err && err.message ? err.message : 'Unable to load shop items.');
+        }
+    }
+
+    async function addNewPrize(tierLabel) {
+        const name = prompt('Prize name:');
+        if (!name) return;
+        const defaultTier = tierLabel === 'gold' ? 3 : (tierLabel === 'silver' ? 2 : 1);
+        const tierInput = prompt('Tier (number):', String(defaultTier));
+        const tierValue = parseInt(tierInput, 10);
+        if (isNaN(tierValue) || tierValue < 1) {
+            showMessage('Tier must be a number >= 1.');
+            return;
+        }
+        const costInput = prompt('EXP cost:');
+        const expCost = parseInt(costInput, 10);
+        if (isNaN(expCost) || expCost < 1) {
+            showMessage('EXP cost must be a number >= 1.');
+            return;
+        }
+        try {
+            await API.createShopItem({ name: name, tier: tierValue, exp_cost: expCost });
+            await loadShop();
+        } catch (err) {
+            showMessage(err && err.message ? err.message : 'Unable to add prize.');
+        }
+    }
+
+    window.addNewPrize = addNewPrize;
+    document.addEventListener('DOMContentLoaded', loadShop);
+</script>
+
+<script src="tour.js"></script>
+</body>
+</html>

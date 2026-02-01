@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tasks</title>
+    <link rel="icon" type="image/png" href="Graphics/lemonie%20happy.png">
+    <link rel="shortcut icon" href="Graphics/lemonie%20happy.png">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="backdrop.css">
+
+    <style>
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            max-width: 150px; 
+            height: auto;
+            cursor: pointer;
+        }
+        .brand-avatar { max-width: 80px; height: auto; margin-right: 8px; }
+        .logo-link { display: flex; align-items: center; justify-content: flex-start; }
+        .logo-container { display:flex; justify-content:flex-start; margin-bottom:20px; }
+        .logo { max-width:150px; height:auto; cursor:pointer; }
+
+        .progress-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            max-width: 650px; 
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .avatar-box {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f4f8;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .avatar-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .progress-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            min-width: 70px; 
+            text-align: right; 
+            white-space: nowrap; 
+        }
+
+        .progress-wrapper {
+            flex-grow: 1;
+            position: relative; 
+            cursor: pointer;
+        }
+
+        .progress-wrapper::after {
+            content: attr(data-percent); 
+            position: absolute;
+            top: -35px; 
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a1a;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0; 
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .progress-wrapper:hover::after {
+            opacity: 1;
+        }
+
+        .progress-track {
+            height: 12px;
+            background-color: #e5e5e5;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #81C784);
+            width: 0%;
+            border-radius: 20px;
+            transition: width 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .task-input-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        #taskInput {
+            padding: 12px;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            width: 250px;
+            font-size: 1rem;
+        }
+        
+        #difficultySelect {
+            padding: 12px;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            background: white;
+            font-size: 1rem;
+        }
+
+        #addTaskBtn {
+            padding: 12px 24px;
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        #addTaskBtn:hover { opacity: 0.9; }
+
+        #taskList {
+            list-style: none;
+            padding: 0;
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .task-item {
+            background: #f9fafb;
+            border: 1px solid #e5e5e5;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.5s ease;
+            opacity: 1;
+        }
+
+        .task-left { display: flex; align-items: center; gap: 12px; }
+        .task-text { font-size: 1.05rem; font-weight: 500; }
+        .task-meta { font-size: 0.85rem; color: #6e6e73; margin-top: 4px; }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .badge-low { background: #e6f4ea; color: #137333; }
+        .badge-med { background: #feefc3; color: #b06000; }
+        .badge-hard { background: #fce8e6; color: #c5221f; }
+
+        .task-actions { display: flex; gap: 8px; }
+        .task-actions button {
+            border: none;
+            border-radius: 8px;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .skip-btn { background: #f2f4f7; color: #4a4a4a; }
+        .task-item.is-skipped { opacity: 0.6; }
+        .task-status {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #b71c1c;
+            margin-left: 8px;
+        }
+
+        .task-message {
+            text-align: center;
+            color: #b71c1c;
+            margin: 12px 0;
+            min-height: 20px;
+        }
+
+        .start-notice {
+            text-align: center;
+            background: #fff7e6;
+            border: 1px solid #ffd8a8;
+            color: #6e6e73;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin: 12px auto 24px;
+            max-width: 520px;
+        }
+
+        .start-notice a {
+            color: #1a1a1a;
+            font-weight: 600;
+            text-decoration: none;
+            margin-left: 6px;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #4CAF50;
+        }
+    </style>
+</head>
+<body class="has-backdrop">
+    <div class="page-container">
+        
+        <div class="logo-container">
+            <a href="home.html" title="Home" style="display:flex;align-items:center;gap:8px;">
+                <img src="Graphics/lemonie satisfied.png" alt="Lemonie" class="brand-avatar">
+                <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney logo" class="logo">
+            </a>
+        </div>
+
+        <nav class="nav-bar">
+            <a href="home.html" class="nav-link">Home</a>
+            <a href="budget.html" class="nav-link">Budget</a>
+            <a href="task.html" class="nav-link active">Task</a>
+            <a href="shop.html" class="nav-link">Shop</a>
+        </nav>
+
+        <div class="progress-section">
+            <div id="avatarBox" class="avatar-box">
+                <img id="avatarImg" src="Graphics/lemonie front view.png" alt="Avatar">
+            </div>
+            
+            <div id="progressWrapper" class="progress-wrapper" data-percent="0%">
+                <div class="progress-track">
+                    <div id="progressBar" class="progress-fill"></div>
+                </div>
+            </div>
+
+            <div id="progressText" class="progress-text">0/0</div>
+        </div>
+
+        <div id="monthGate" class="start-notice hidden">
+            Start month first to unlock tasks.
+            <a href="budget.html">Enter Budget</a>
+        </div>
+
+        <div id="taskMessage" class="task-message"></div>
+
+        <div class="task-input-area">
+            <input type="text" id="taskInput" placeholder="Add a new task..." />
+            <select id="difficultySelect"></select>
+            <button id="addTaskBtn">Add Task</button>
+        </div>
+
+        <ul id="taskList"></ul>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="chat.js"></script>
+    <script>
+        const taskInput = document.getElementById('taskInput');
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        const taskList = document.getElementById('taskList');
+        const difficultySelect = document.getElementById('difficultySelect');
+        const taskMessage = document.getElementById('taskMessage');
+        const monthGate = document.getElementById('monthGate');
+
+        const progressBar = document.getElementById('progressBar');
+        const progressWrapper = document.getElementById('progressWrapper'); 
+        const progressText = document.getElementById('progressText');
+        const avatarBox = document.getElementById('avatarBox');
+        const avatarImg = document.getElementById('avatarImg');
+
+        const myImages = [
+            'Graphics/lemonie front view.png', 
+            'Graphics/lemonie happy.png', 
+            'Graphics/lemonie satisfied.png',
+            'Graphics/lemonie talks.png',
+            'Graphics/lemonie front view.png'
+        ];
+        
+        let avatarIndex = 0;
+        let currentState = null;
+        const todayStr = new Date().toISOString().slice(0, 10);
+
+        function showMessage(message) {
+            taskMessage.textContent = message || '';
+        }
+
+        function showMonthGate() {
+            monthGate.classList.remove('hidden');
+            document.querySelector('.task-input-area').classList.add('hidden');
+            taskList.classList.add('hidden');
+            setTimeout(() => {
+                window.location.href = 'budget.html';
+            }, 1500);
+        }
+
+        function cycleAvatar() {
+            avatarIndex = (avatarIndex + 1) % myImages.length; 
+            
+            avatarBox.style.transform = "scale(0.8) rotate(10deg)";
+            setTimeout(() => {
+                avatarImg.src = myImages[avatarIndex];
+                avatarBox.style.transform = "scale(1.1) rotate(0deg)";
+            }, 150);
+            setTimeout(() => {
+                avatarBox.style.transform = "scale(1)";
+            }, 300);
+        }
+
+        function updateProgressUI(state) {
+            if (!state) return;
+            const earned = Number(state.exp_earned || 0);
+            const cap = Number(state.exp_cap || 0);
+            const percent = cap > 0 ? Math.min((earned / cap) * 100, 100) : 0;
+            progressText.textContent = Math.round(earned) + '/' + Math.round(cap);
+            progressBar.style.width = percent.toFixed(1) + '%';
+            progressWrapper.setAttribute('data-percent', Math.round(percent) + '%');
+        }
+
+        function setDifficultyOptions(state) {
+            difficultySelect.innerHTML = '';
+            const spendingPool = Number(state.psp_total || 0);
+            const lowPts = Math.round(spendingPool * 0.03);
+            const medPts = Math.round(spendingPool * 0.06);
+            const hardPts = Math.round(spendingPool * 0.15);
+            const options = [
+                { label: 'Low (3% of Spend Pool) — ' + lowPts + ' EXP', value: '3' },
+                { label: 'Medium (6% of Spend Pool) — ' + medPts + ' EXP', value: '6' },
+                { label: 'Hard (15% of Spend Pool) — ' + hardPts + ' EXP', value: '15' }
+            ];
+            options.forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt.value;
+                option.textContent = opt.label;
+                difficultySelect.appendChild(option);
+            });
+        }
+
+        function badgeClassForDifficulty(percentValue) {
+            const pct = Number(percentValue);
+            if (pct <= 3) return 'badge-low';
+            if (pct <= 6) return 'badge-med';
+            return 'badge-hard';
+        }
+
+        function renderTasks(instances) {
+            taskList.innerHTML = '';
+            if (!instances || !instances.length) {
+                const empty = document.createElement('li');
+                empty.className = 'task-item';
+                empty.textContent = 'No tasks for today.';
+                taskList.appendChild(empty);
+                return;
+            }
+
+            instances.forEach(instance => {
+                const status = String(instance.status || 'pending').toLowerCase();
+                const isCompleted = status === 'completed';
+                const isSkipped = status === 'skipped';
+                const li = document.createElement('li');
+                li.className = 'task-item' + (isSkipped ? ' is-skipped' : '');
+
+                const badgeClass = badgeClassForDifficulty(instance.difficulty);
+                const badgeText = String(instance.difficulty || '') + '%';
+                const expText = 'EXP ' + instance.exp_value;
+                const statusText = isSkipped ? '<span class="task-status">Skipped</span>' : '';
+
+                li.innerHTML = `
+                    <div class="task-left">
+                        <input type="checkbox" class="complete-checkbox" data-instance-id="${instance.id}" ${isCompleted ? 'checked' : ''} ${(isCompleted || isSkipped) ? 'disabled' : ''}>
+                        <div>
+                            <div class="task-text">${instance.title}</div>
+                            <div class="task-meta">
+                                <span class="badge ${badgeClass}">${badgeText}</span>
+                                <span>${expText}</span>
+                                ${statusText}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="skip-btn" data-instance-id="${instance.id}" ${(isCompleted || isSkipped) ? 'disabled' : ''}>Skip</button>
+                    </div>
+                `;
+
+                const checkbox = li.querySelector('.complete-checkbox');
+                const skipBtn = li.querySelector('.skip-btn');
+
+                checkbox.addEventListener('change', async function () {
+                    if (!this.checked) {
+                        return;
+                    }
+                    const instanceId = this.dataset.instanceId;
+                    const note = prompt('Add a completion note (min 8 chars):');
+                    if (!note || note.trim().length < 8) {
+                        showMessage('Completion note must be at least 8 characters.');
+                        this.checked = false;
+                        return;
+                    }
+                    showMessage('');
+                    checkbox.disabled = true;
+                    try {
+                        await API.completeTaskInstance(instanceId, note.trim());
+                        cycleAvatar();
+                        await refreshMonthState();
+                        await refreshTasks();
+                    } catch (err) {
+                        showMessage(err && err.message ? err.message : 'Unable to complete task.');
+                        checkbox.disabled = false;
+                        checkbox.checked = false;
+                    }
+                });
+
+                skipBtn.addEventListener('click', async function () {
+                    const instanceId = this.dataset.instanceId;
+                    showMessage('');
+                    skipBtn.disabled = true;
+                    try {
+                        await API.skipTaskInstance(instanceId);
+                        await refreshTasks();
+                    } catch (err) {
+                        showMessage(err && err.message ? err.message : 'Unable to skip task.');
+                        skipBtn.disabled = false;
+                    }
+                });
+
+                taskList.appendChild(li);
+            });
+        }
+
+        async function refreshTasks() {
+            try {
+                const instances = await API.listTaskInstances(todayStr);
+                renderTasks(instances);
+                return instances;
+            } catch (err) {
+                showMessage(err && err.message ? err.message : 'Unable to load tasks.');
+                return null;
+            }
+        }
+
+        async function refreshMonthState() {
+            try {
+                currentState = await API.monthState();
+                updateProgressUI(currentState);
+                setDifficultyOptions(currentState);
+                return currentState;
+            } catch (err) {
+                showMessage(err && err.message ? err.message : 'Unable to load progress.');
+                return null;
+            }
+        }
+
+        async function initialize() {
+            if (!window.API || !API.getToken || !API.getToken()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                currentState = await API.monthState();
+                updateProgressUI(currentState);
+                setDifficultyOptions(currentState);
+                monthGate.classList.add('hidden');
+                document.querySelector('.task-input-area').classList.remove('hidden');
+                taskList.classList.remove('hidden');
+
+                await API.generateTasks(todayStr);
+                await refreshTasks();
+            } catch (err) {
+                if (err && err.status === 400) {
+                    showMonthGate();
+                    return;
+                }
+                showMessage(err && err.message ? err.message : 'Unable to load tasks.');
+            }
+        }
+
+        addTaskBtn.addEventListener('click', async function () {
+            const title = taskInput.value.trim();
+            const difficulty = difficultySelect.value;
+
+            if (!title) {
+                showMessage('Please enter a task title.');
+                return;
+            }
+            showMessage('');
+            addTaskBtn.disabled = true;
+            try {
+                await API.createTaskTemplate({
+                    title: title,
+                    difficulty: difficulty,
+                    schedule_type: 'daily'
+                });
+                await API.generateTasks(todayStr);
+                await refreshTasks();
+                taskInput.value = '';
+            } catch (err) {
+                showMessage(err && err.message ? err.message : 'Unable to add task.');
+            } finally {
+                addTaskBtn.disabled = false;
+            }
+        });
+        
+        taskInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTaskBtn.click();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', initialize);
+    </script>
+    <script src="tour.js"></script>
+</body>
+</html>

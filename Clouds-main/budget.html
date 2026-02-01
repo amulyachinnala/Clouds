@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Budget - Lemoney</title>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="backdrop.css">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+        }
+
+        .page-container {
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .logo {
+            width: 160px;
+            margin: 30px auto 10px;
+            display: block;
+        }
+
+        .nav-bar {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #9aa0a6;
+            font-size: 16px;
+        }
+
+        .nav-link.active {
+            color: black;
+            font-weight: bold;
+        }
+
+        .budget-text {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .budget-message {
+            text-align: center;
+            color: #b71c1c;
+            margin: 12px 0 0;
+            min-height: 20px;
+        }
+
+        .start-notice {
+            text-align: center;
+            background: #fff7e6;
+            border: 1px solid #ffd8a8;
+            color: #6e6e73;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin: 16px auto 0;
+            max-width: 560px;
+        }
+
+        .start-notice a {
+            color: #1a1a1a;
+            font-weight: 600;
+            text-decoration: none;
+            margin-left: 6px;
+        }
+
+        .budget-form {
+            max-width: 520px;
+            margin: 24px auto 16px;
+            background: #f9fafb;
+            border: 1px solid #e5e5e5;
+            border-radius: 14px;
+            padding: 16px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .budget-form input {
+            padding: 10px 12px;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            min-width: 160px;
+        }
+
+        .budget-form button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            background: #1a1a1a;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* ---------- CHART LAYOUT ---------- */
+
+        .charts-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 60px;
+            gap: 40px;
+        }
+
+        .chart-column {
+            flex: 1;
+            text-align: center;
+        }
+
+        .pie-chart-container {
+            width: 100%;
+            max-width: 450px;
+            aspect-ratio: 1 / 1;
+            margin: 0 auto;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        h3 {
+            margin-bottom: 15px;
+        }
+
+        /* ---------- INPUT UI ---------- */
+
+        .item-inputs {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .item-inputs input {
+            padding: 8px;
+            width: 120px;
+        }
+
+        .item-inputs button {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        .input-message {
+            margin-top: 10px;
+            color: #6e6e73;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body class="has-backdrop">
+<div class="page-container">
+
+    <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney logo" class="logo">
+
+    <nav class="nav-bar">
+        <a href="home.html" class="nav-link">Home</a>
+        <a href="budget.html" class="nav-link active">Budget</a>
+        <a href="task.html" class="nav-link">Task</a>
+        <a href="shop.html" class="nav-link">Shop</a>
+    </nav>
+
+    <div class="budget-text">
+        <h2>Budget Tracker</h2>
+        <p>Enter your budget to start the month.</p>
+    </div>
+
+    <form id="budgetForm" class="budget-form">
+        <input type="number" id="incomeInput" min="0" step="0.01" placeholder="Monthly income" required>
+        <input type="number" id="ratioInput" min="0" step="0.1" value="1.0" placeholder="Ratio">
+        <button type="submit">Save Budget</button>
+    </form>
+
+    <div id="budgetMessage" class="budget-message"></div>
+    <div id="startNotice" class="start-notice hidden">
+        Enter budget to start the month and unlock charts.
+    </div>
+
+    <div class="charts-row">
+
+        <!-- LEFT PIE -->
+        <div class="chart-column">
+            <h3 id="pspTitle">Spending Money ($0.00)</h3>
+
+            <div class="pie-chart-container">
+                <canvas id="psp-chart"></canvas>
+            </div>
+
+            <div class="item-inputs">
+                <input type="text" id="item-name" placeholder="Item name">
+                <input type="number" id="item-price" placeholder="$ price">
+                <button id="addItemBtn" type="button">Add</button>
+            </div>
+            <div id="addItemMessage" class="input-message"></div>
+        </div>
+
+        <!-- RIGHT PIE -->
+        <div class="chart-column">
+            <h3>Income Split</h3>
+            <div class="pie-chart-container">
+                <canvas id="income-chart"></canvas>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="chat.js"></script>
+<script>
+    const incomeChart = new Chart(document.getElementById('income-chart'), {
+        type: 'pie',
+        data: {
+            labels: ['Needs', 'Savings', 'Spend Pool'],
+            datasets: [{
+                data: [0, 0, 0],
+                backgroundColor: ['#F2C94C', '#6FCF97', '#FDE68A']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+
+    const palette = ['#6FB98F', '#F2C94C', '#F28482', '#9AD0EC', '#CDB4DB', '#FFD166', '#06D6A0', '#118AB2'];
+    const incomeColorMap = { 'Needs': '#F2C94C', 'Savings': '#6FCF97', 'Spend Pool': '#FDE68A' };
+    const remainingColor = 'rgba(210,210,210,0.9)';
+    let pspChart = null;
+
+    function formatCurrency(value) {
+        const num = Number(value || 0);
+        return '$' + num.toFixed(2);
+    }
+
+    function showMessage(text) {
+        document.getElementById('budgetMessage').textContent = text || '';
+    }
+
+    function showStartNotice(show) {
+        const notice = document.getElementById('startNotice');
+        if (show) {
+            notice.classList.remove('hidden');
+        } else {
+            notice.classList.add('hidden');
+        }
+    }
+
+    function setItemUiEnabled(enabled) {
+        document.getElementById('item-name').disabled = !enabled;
+        document.getElementById('item-price').disabled = !enabled;
+        document.getElementById('addItemBtn').disabled = !enabled;
+    }
+
+    function toNumber(value) {
+        const num = Number(value);
+        return Number.isFinite(num) ? num : 0;
+    }
+
+    function updatePie(chart, pieData, colorMap) {
+        const slices = (pieData && pieData.slices) ? pieData.slices : [];
+        const labels = slices.map(slice => slice.label);
+        const values = slices.map(slice => Number(slice.value || 0));
+        const total = Number(pieData && pieData.total ? pieData.total : 0);
+        const colors = labels.map((label, idx) => colorMap[label] || palette[idx % palette.length]);
+
+        chart.data.labels = labels.length ? labels : ['No data'];
+        chart.data.datasets[0].data = labels.length ? values : [0];
+        chart.data.datasets[0].backgroundColor = labels.length ? colors : ['#e5e5e5'];
+        chart.options.plugins.tooltip = {
+            callbacks: {
+                label: function(ctx) {
+                    const amount = Number(ctx.raw || 0);
+                    const percent = total > 0 ? (amount / total) * 100 : 0;
+                    return ctx.label + ': $' + amount.toFixed(2) + ' (' + percent.toFixed(1) + '%)';
+                }
+            }
+        };
+        chart.update();
+    }
+
+    function colorForLabel(label) {
+        if (label === 'PSP Remaining') return remainingColor;
+        let hash = 0;
+        const str = String(label || '');
+        for (let i = 0; i < str.length; i++) {
+            hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
+        }
+        const hue = hash % 360;
+        return 'hsl(' + hue + ' 65% 55%)';
+    }
+
+    function destroyPspChart() {
+        if (pspChart) {
+            pspChart.destroy();
+            pspChart = null;
+        }
+    }
+
+    function renderPspChart(labels, values, pspTotal) {
+        const canvas = document.getElementById('psp-chart');
+        if (!canvas) return;
+        destroyPspChart();
+        const nums = values.map(v => Number(v));
+        const colors = labels.map(colorForLabel);
+        const ctx = canvas.getContext('2d');
+        pspChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: nums,
+                    backgroundColor: colors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: { display: true, text: 'Spending Money ($' + pspTotal.toFixed(2) + ')' },
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                const v = Number(context.parsed) || 0;
+                                const total = nums.reduce((a, b) => a + b, 0) || 1;
+                                const pct = (v / total) * 100;
+                                return context.label + ': $' + v.toFixed(2) + ' (' + pct.toFixed(1) + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        const titleEl = document.getElementById('pspTitle');
+        if (titleEl) {
+            titleEl.textContent = 'Spending Money ($' + pspTotal.toFixed(2) + ')';
+        }
+    }
+
+    function extractPurchases(response) {
+        if (!response) return [];
+        if (Array.isArray(response)) return response;
+        if (Array.isArray(response.purchases)) return response.purchases;
+        if (Array.isArray(response.items)) return response.items;
+        return [];
+    }
+
+    async function loadPspBreakdownChart(monthState) {
+        const month = monthState || await API.monthState();
+        const pspTotal = Number(month && (month.psp_total ?? month.pspTotal ?? month.spend_pool ?? 0)) || 0;
+        const ratio = Number(month && month.ratio) || 1.0;
+
+        if (pspTotal <= 0) {
+            showStartNotice(true);
+            setItemUiEnabled(false);
+            destroyPspChart();
+            const titleEl = document.getElementById('pspTitle');
+            if (titleEl) {
+                titleEl.textContent = 'Spending Money ($0.00)';
+            }
+            return;
+        }
+
+        let purchases = [];
+        let purchaseError = null;
+        try {
+            const resp = await API.listPurchases();
+            purchases = extractPurchases(resp);
+        } catch (err) {
+            purchaseError = err;
+            purchases = [];
+        }
+
+        if (purchaseError) {
+            showMessage('Could not load purchases.');
+        }
+
+        const totals = new Map();
+        for (const purchase of purchases) {
+            const name = String(purchase.name ?? purchase.title ?? purchase.item_name ?? 'Item');
+            let cost = Number(purchase.cash_spent);
+            if (!Number.isFinite(cost) || cost <= 0) {
+                cost = Number(purchase.cash_price);
+            }
+            if (!Number.isFinite(cost) || cost <= 0) {
+                cost = Number(purchase.price);
+            }
+            if (!Number.isFinite(cost) || cost <= 0) {
+                cost = Number(purchase.cost);
+            }
+            if (!Number.isFinite(cost) || cost <= 0) {
+                cost = Number(purchase.amount);
+            }
+            if (!Number.isFinite(cost) || cost <= 0) {
+                const expCost = Number(purchase.exp_cost ?? purchase.expCost ?? purchase.cost_exp ?? purchase.exp ?? NaN);
+                if (Number.isFinite(expCost) && expCost > 0) {
+                    cost = expCost * ratio;
+                }
+            }
+            if (!Number.isFinite(cost) || cost <= 0) {
+                continue;
+            }
+            totals.set(name, (totals.get(name) || 0) + cost);
+        }
+
+        const labels = [];
+        const values = [];
+        let spent = 0;
+        for (const [name, amt] of totals.entries()) {
+            const numeric = Number(amt);
+            if (!Number.isFinite(numeric) || numeric <= 0) {
+                continue;
+            }
+            labels.push(name);
+            values.push(numeric);
+            spent += numeric;
+        }
+
+        const remaining = Math.max(0, pspTotal - spent);
+        if (labels.length === 0) {
+            labels.push('PSP Remaining');
+            values.push(pspTotal);
+        } else {
+            labels.push('PSP Remaining');
+            values.push(remaining);
+        }
+
+        renderPspChart(labels, values, pspTotal);
+    }
+
+    async function loadCharts() {
+        if (!window.API || !API.getToken || !API.getToken()) {
+            window.location.href = 'login.html';
+            return;
+        }
+
+        showMessage('');
+
+        try {
+            const state = await API.monthState();
+            showStartNotice(false);
+            setItemUiEnabled(true);
+
+            try {
+                const charts = await API.charts();
+                if (charts && charts.income_pie) {
+                    updatePie(incomeChart, charts.income_pie, incomeColorMap);
+                } else {
+                    updatePie(incomeChart, { slices: [], total: 0 }, incomeColorMap);
+                }
+            } catch (err) {
+                updatePie(incomeChart, { slices: [], total: 0 }, incomeColorMap);
+            }
+
+            await loadPspBreakdownChart(state);
+
+            try {
+                if (localStorage.getItem('psp_dirty')) {
+                    localStorage.removeItem('psp_dirty');
+                }
+            } catch (err) {
+                // ignore
+            }
+        } catch (err) {
+            if (err && err.status === 400) {
+                showStartNotice(true);
+                setItemUiEnabled(false);
+                destroyPspChart();
+                updatePie(incomeChart, { slices: [], total: 0 }, incomeColorMap);
+                return;
+            }
+            destroyPspChart();
+            showMessage(err && err.message ? err.message : 'Unable to load budget data.');
+        }
+    }
+
+    document.getElementById('budgetForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+        showMessage('');
+        const income = parseFloat(document.getElementById('incomeInput').value);
+        const ratioInput = document.getElementById('ratioInput').value;
+        const ratio = ratioInput ? parseFloat(ratioInput) : 1.0;
+
+        if (isNaN(income) || income <= 0) {
+            showMessage('Enter a valid income.');
+            return;
+        }
+        if (isNaN(ratio) || ratio <= 0) {
+            showMessage('Enter a valid ratio.');
+            return;
+        }
+
+        try {
+            await API.monthStart(income, ratio);
+            localStorage.setItem('month_started', '1');
+            await loadCharts();
+        } catch (err) {
+            showMessage(err && err.message ? err.message : 'Unable to start month.');
+        }
+    });
+
+    document.getElementById('addItemBtn').addEventListener('click', function () {
+        document.getElementById('addItemMessage').textContent = 'Spending entries are not wired yet -- purchases are tracked via Shop.';
+    });
+
+    window.addEventListener('storage', function (event) {
+        if (event && event.key === 'psp_dirty') {
+            loadCharts();
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', loadCharts);
+</script>
+
+</body>
+</html>

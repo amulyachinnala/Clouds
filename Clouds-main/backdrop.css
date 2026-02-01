@@ -1,0 +1,8 @@
+body.has-backdrop{
+  background-image:url('Graphics/backdrop.jpg');
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  background-attachment:fixed;
+  min-height:100vh;
+}

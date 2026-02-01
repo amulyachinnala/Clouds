@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Home - Lemoney</title>
+    <link rel="icon" type="image/png" href="Graphics/lemonie%20happy.png">
+    <link rel="shortcut icon" href="Graphics/lemonie%20happy.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="backdrop.css">
+
+    <style>
+        .logo-container { display:flex; justify-content:flex-start; margin-bottom:20px }
+        .logo-link { display:flex; align-items:center; gap:8px }
+        .logo { max-width:150px; height:auto }
+        .brand-avatar { max-width:80px; height:auto }
+        #loadingOverlay{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:#fff; z-index:2147483647 }
+        #loadingOverlay.hidden{ display:none }
+        #loadingGif{ max-width:min(1000px,90vw); max-height:90vh; object-fit:contain; transition:opacity .6s ease }
+        .page-container.dimmed{ filter:brightness(.35); transition:filter .6s }
+        body.no-scroll{ overflow:hidden }
+
+        .summary-card {
+            background:#f9fafb;
+            border:1px solid #e5e5e5;
+            border-radius:16px;
+            padding:20px;
+            margin:16px auto 24px;
+            max-width:820px;
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap:16px;
+        }
+
+        .summary-item {
+            background:#fff;
+            border:1px solid #eef0f2;
+            border-radius:12px;
+            padding:12px 14px;
+        }
+
+        .summary-item span { display:block; color:#6e6e73; font-size:0.85rem; margin-bottom:6px; }
+        .summary-item strong { font-size:1.05rem; color:#1a1a1a; }
+
+        .start-banner {
+            background:#fff7e6;
+            border:1px solid #ffd8a8;
+            border-radius:16px;
+            padding:16px 18px;
+            max-width:720px;
+            margin:0 auto 24px;
+            text-align:center;
+            color:#6e6e73;
+        }
+
+        .start-banner a {
+            display:inline-block;
+            margin-left:8px;
+            color:#1a1a1a;
+            font-weight:600;
+            text-decoration:none;
+        }
+
+        .weekly-placeholder {
+            height:100%;
+            min-height:180px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#6e6e73;
+            font-size:0.95rem;
+            border:1px dashed #e5e5e5;
+            border-radius:12px;
+            background:#f9fafb;
+            padding:16px;
+            text-align:center;
+        }
+    </style>
+</head>
+<body class="has-backdrop">
+
+    <div id="loadingOverlay" aria-hidden="true">
+        <img id="loadingGif" src="Graphics/loading.gif" alt="Loading">
+    </div>
+
+    <div class="page-container">
+        <div class="logo-container">
+            <a href="home.html" class="logo-link">
+                <img src="Graphics/lemonie satisfied.png" alt="Lemonie" class="brand-avatar">
+                <img src="Graphics/LEMONEY%20logo.png" alt="Lemoney" class="logo">
+            </a>
+        </div>
+
+        <nav class="nav-bar">
+            <a href="home.html" class="nav-link active">Home</a>
+            <a href="budget.html" class="nav-link">Budget</a>
+            <a href="task.html" class="nav-link">Task</a>
+            <a href="shop.html" class="nav-link">Shop</a>
+        </nav>
+
+        <main style="max-width:1000px;margin:0 auto;">
+            <section style="text-align:center;margin:24px 0;">
+                <h1>Welcome back</h1>
+                <p style="color:#6e6e73">Here is your activity for the month.</p>
+            </section>
+
+            <section id="startBanner" class="start-banner hidden">
+                Enter your budget to start the month.
+                <a href="budget.html">Go to Budget</a>
+            </section>
+
+            <section id="monthSummary" class="summary-card hidden">
+                <div class="summary-item"><span>Income</span><strong id="summaryIncome">$0.00</strong></div>
+                <div class="summary-item"><span>Spend Pool</span><strong id="summaryPsp">$0.00</strong></div>
+                <div class="summary-item"><span>EXP Available</span><strong id="summaryExp">0</strong></div>
+                <div class="summary-item"><span>Cash Available</span><strong id="summaryCash">$0.00</strong></div>
+                <div class="summary-item"><span>Locked Cash</span><strong id="summaryLocked">$0.00</strong></div>
+                <div class="summary-item"><span>Streak Days</span><strong id="summaryStreak">0</strong></div>
+            </section>
+
+            <section class="charts-row" style="display:flex;gap:32px;">
+                <div class="calendar-card" style="flex:1;min-width:280px">
+                    <div class="calendar-header"><strong id="monthName">Month</strong></div>
+                    <div id="calendarGrid" class="calendar-grid"></div>
+                </div>
+                <div class="chart-card" style="flex:1;min-width:280px">
+                    <div class="calendar-header"><strong>Weekly Points</strong></div>
+                    <div id="weeklyChart" class="chart-container"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="chat.js"></script>
+    <script>
+        const monthNameEl = document.getElementById('monthName');
+        const calendarGrid = document.getElementById('calendarGrid');
+        const weeklyChart = document.getElementById('weeklyChart');
+        const summaryCard = document.getElementById('monthSummary');
+        const startBanner = document.getElementById('startBanner');
+
+        function formatCurrency(value) {
+            const num = Number(value || 0);
+            return '$' + num.toFixed(2);
+        }
+
+        function renderCalendar() {
+            const date = new Date();
+            const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+            monthNameEl.innerText = months[date.getMonth()] + ' ' + date.getFullYear();
+            calendarGrid.innerHTML = '';
+            ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(d => {
+                const e = document.createElement('div');
+                e.className = 'weekday-label';
+                e.innerText = d;
+                calendarGrid.appendChild(e);
+            });
+            const days = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+            for (let i = 1; i <= days; i++) {
+                const el = document.createElement('div');
+                el.className = 'day-cell';
+                el.innerText = i;
+                calendarGrid.appendChild(el);
+            }
+        }
+
+        function showStartBanner() {
+            startBanner.classList.remove('hidden');
+            summaryCard.classList.add('hidden');
+            setTimeout(() => {
+                window.location.href = 'budget.html';
+            }, 1500);
+        }
+
+        function renderSummary(state) {
+            document.getElementById('summaryIncome').textContent = formatCurrency(state.income);
+            document.getElementById('summaryPsp').textContent = formatCurrency(state.psp_total);
+            document.getElementById('summaryExp').textContent = Math.round(state.exp_available || 0);
+            document.getElementById('summaryCash').textContent = formatCurrency(state.cash_available);
+            document.getElementById('summaryLocked').textContent = formatCurrency(state.locked_cash);
+            document.getElementById('summaryStreak').textContent = state.streak_days || 0;
+            summaryCard.classList.remove('hidden');
+            startBanner.classList.add('hidden');
+        }
+
+        async function loadMonthState() {
+            if (!window.API || !API.getToken || !API.getToken()) {
+                window.location.href = 'login.html';
+                return;
+            }
+            weeklyChart.innerHTML = '<div class="weekly-placeholder">Weekly chart data is not available yet.</div>';
+
+            try {
+                const state = await API.monthState();
+                renderSummary(state);
+            } catch (err) {
+                if (err && err.status === 400) {
+                    showStartBanner();
+                    return;
+                }
+                showStartBanner();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            renderCalendar();
+            loadMonthState();
+        });
+    </script>
+
+    <script>
+    (function(){
+        const overlay=document.getElementById('loadingOverlay');
+        const gif=document.getElementById('loadingGif');
+        const container=document.querySelector('.page-container');
+        const fadeDuration=1000, totalVisible=3000, fadeStart=Math.max(0,totalVisible-fadeDuration);
+        function show(){ overlay.style.display='flex'; overlay.style.opacity='1'; gif.style.opacity='1'; container.classList.add('dimmed'); document.body.classList.add('no-scroll'); setTimeout(()=>{gif.style.opacity='0.01'},fadeStart); setTimeout(()=>{overlay.style.display='none'; container.classList.remove('dimmed'); document.body.classList.remove('no-scroll'); gif.style.opacity='1'}, totalVisible); }
+        window.addEventListener('DOMContentLoaded', show); window.addEventListener('pageshow', show);
+    })();
+    </script>
+
+    <script src="tour.js"></script>
+</body>
+</html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lemoney - Sign In</title>
+    <link rel="icon" type="image/png" href="Graphics/lemonie%20happy.png">
+    <link rel="shortcut icon" href="Graphics/lemonie%20happy.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* CSS Styles */
+        :root {
+            --primary-text: #1a1a1a;
+            --secondary-text: #6e6e73;
+            --input-bg: #f2f4f7;
+            --button-bg: #1a1a1a;
+            --bg-gradient-top: #c4e0f3;
+            --bg-gradient-bottom: #eef6fc;
+        }
+            .modal-input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #d0d0d0;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            /* Cloudy Background */
+            background: url('https://t4.ftcdn.net/jpg/00/90/76/59/360_F_90765953_xgLAsm6N7VZD1zMlO9CA8t7qwBpZ4lSr.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Top Left Logo */
+        .brand-logo {
+            position: absolute;
+            top: 25px;
+            left: 30px;
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary-text);
+        }
+
+        .brand-logo i {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+
+        /*Login Box */
+        .login-card {
+            background: rgba(255, 255, 255, 0.95); 
+            padding: 48px 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        /* The top icon box */
+        .card-icon-top {
+            width: 50px;
+            height: 50px;
+            background: #fff;
+            border: 2px solid #e6e8ec;
+            border-radius: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 24px auto;
+            font-size: 1.2rem;
+            color: var(--primary-text);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-text);
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--secondary-text);
+            line-height: 1.5;
+            margin-bottom: 24px;
+            padding: 0 10px;
+        }
+
+        .auth-error {
+            display: none;
+            background: #fdecea;
+            color: #b71c1c;
+            border: 1px solid #f5c6cb;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .auth-toggle {
+            margin-top: 18px;
+            font-size: 0.9rem;
+            color: var(--secondary-text);
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .toggle-btn {
+            border: none;
+            background: none;
+            color: #1a1a1a;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        /* Input Fields Styling */
+        .input-group {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .input-group i.field-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9aa0a6;
+            font-size: 0.9rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 45px 16px 45px;
+            background: var(--input-bg);
+            border: none;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: var(--primary-text);
+            outline: none;
+            transition: background 0.2s;
+        }
+
+        .input-group input:focus {
+            background: #e8ebee;
+        }
+
+        .input-group input::placeholder {
+            color: #9aa0a6;
+            font-weight: 500;
+        }
+
+        /* Password Toggle Eye Icon */
+        .toggle-password {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9aa0a6;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .forgot-pass-link {
+            display: block;
+            text-align: right;
+            font-size: 0.85rem;
+            color: var(--secondary-text);
+            text-decoration: none;
+            margin-top: -8px;
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+
+        /* Main Button */
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: var(--button-bg);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        /* Divider with text */
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: var(--secondary-text);
+            font-size: 0.85rem;
+            margin: 24px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e6e8ec;
+        }
+
+        .divider span {
+            margin: 0 12px;
+        }
+
+        /* Social Login Buttons */
+        .social-login-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .social-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 1px solid #e6e8ec;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .social-btn:hover {
+            background: #f8f9fa;
+            transform: translateY(-2px);
+        }
+
+        /* Style the images inside the buttons */
+        .social-btn img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="brand-logo">
+        <i class="fa-solid fa-cloud"></i> 
+        <span>Cloud</span>
+    </header>
+    <main class="login-card">
+        <h1 id="formTitle">Sign in with email</h1>
+        <p class="subtitle" id="formSubtitle">Manage your finances while being productive. For free</p>
+
+        <div id="authError" class="auth-error" role="alert"></div>
+
+        <form id="loginForm">
+            <div class="input-group">
+                <i class="fa-solid fa-envelope field-icon"></i>
+                <input type="email" id="emailField" placeholder="Email" required>
+            </div>
+
+            <div class="input-group">
+                <i class="fa-solid fa-lock field-icon"></i>
+                <input type="password" id="passwordField" placeholder="Password" required>
+                <i class="fa-solid fa-eye-slash toggle-password" id="togglePasswordBtn"></i>
+            </div>
+
+            <a href="#" class="forgot-pass-link">Forgot password?</a>
+
+            <button type="submit" id="submitBtn" class="btn-primary">Get Started</button>
+        </form>
+
+        <div class="auth-toggle">
+            <span id="toggleText">New here?</span>
+            <button type="button" id="toggleModeBtn" class="toggle-btn">Create account</button>
+        </div>
+
+        <div class="divider">
+            <span>Or sign in with</span>
+        </div>
+
+        <div class="social-login-group">
+            <button class="social-btn" type="button">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google">
+            </button>
+            <button class="social-btn" type="button">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" alt="Facebook">
+            </button>
+            <button class="social-btn" type="button">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple">
+            </button>
+        </div>
+
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="chat.js"></script>
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const emailField = document.getElementById('emailField');
+        const passwordField = document.getElementById('passwordField');
+        const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+        const authError = document.getElementById('authError');
+        const toggleModeBtn = document.getElementById('toggleModeBtn');
+        const toggleText = document.getElementById('toggleText');
+        const formTitle = document.getElementById('formTitle');
+        const submitBtn = document.getElementById('submitBtn');
+
+        let authMode = 'login';
+
+        function setMode(mode) {
+            authMode = mode;
+            if (authMode === 'login') {
+                formTitle.textContent = 'Sign in with email';
+                submitBtn.textContent = 'Get Started';
+                toggleText.textContent = 'New here?';
+                toggleModeBtn.textContent = 'Create account';
+            } else {
+                formTitle.textContent = 'Create your account';
+                submitBtn.textContent = 'Create Account';
+                toggleText.textContent = 'Already have an account?';
+                toggleModeBtn.textContent = 'Sign in';
+            }
+            hideError();
+        }
+
+        function showError(message) {
+            authError.textContent = message;
+            authError.style.display = 'block';
+        }
+
+        function hideError() {
+            authError.textContent = '';
+            authError.style.display = 'none';
+        }
+
+        toggleModeBtn.addEventListener('click', function () {
+            setMode(authMode === 'login' ? 'signup' : 'login');
+        });
+
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            hideError();
+            const email = emailField.value.trim();
+            const password = passwordField.value;
+
+            if (!email || !password) {
+                showError('Email and password are required.');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = authMode === 'login' ? 'Signing in...' : 'Creating account...';
+
+            try {
+                if (!window.API) {
+                    throw new Error('API not available.');
+                }
+                let data;
+                if (authMode === 'login') {
+                    data = await API.login(email, password);
+                } else {
+                    data = await API.signup(email, password);
+                }
+                if (data && data.access_token) {
+                    API.setToken(data.access_token);
+                } else {
+                    throw new Error('Missing access token.');
+                }
+                window.location.href = 'home.html';
+            } catch (err) {
+                showError(err && err.message ? err.message : 'Authentication failed.');
+            } finally {
+                submitBtn.disabled = false;
+                setMode(authMode);
+            }
+        });
+
+        togglePasswordBtn.addEventListener('click', function () {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.API && API.getToken && API.getToken()) {
+                window.location.href = 'home.html';
+            }
+        });
+    </script>
+</body>
+</html>
